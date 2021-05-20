@@ -1,48 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:med/backend/database_helper.dart';
-import 'package:med/entities/patient.dart';
-import 'package:med/screens/patient/edit_patient.dart';
+import 'package:med/entities/doctor.dart';
+import 'package:med/screens/home_page.dart';
 
-import 'add_patient.dart';
+import 'add_doctor.dart';
+import 'edit_doctor.dart';
 
-class PatientsPage extends StatefulWidget {
-  final bool selectMode;
-
-  const PatientsPage({Key key, this.selectMode}) : super(key: key);
+class DoctorsPage extends StatefulWidget {
   @override
-  _PatientsPageState createState() => _PatientsPageState();
+  _DoctorsPageState createState() => _DoctorsPageState();
 }
 
-class _PatientsPageState extends State<PatientsPage> {
-  List<Patient> _patientList = [];
+class _DoctorsPageState extends State<DoctorsPage> {
+  List<Doctor> _doctorList = [];
 
   @override
   void initState() {
     super.initState();
-    DatabaseHelper.selectPatient().then((value) {
+    DatabaseHelper.selectDoctors().then((value) {
       List.generate(value.length, (index) {
         setState(() {
-          _patientList.add(Patient.fromMap(value[index]));
+          _doctorList.add(Doctor.fromMap(value[index]));
         });
       });
-    });
+    }).catchError((onError) => print(onError));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Patients'),
+        title: Text('Login'),
         actions: [
           IconButton(
               icon: Icon(Icons.add),
               onPressed: () {
                 Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => AddPatient()))
+                    .push(MaterialPageRoute(builder: (context) => AddDoctor()))
                     .then((value) {
                   if (value != null) {
                     setState(() {
-                      _patientList.add(value);
+                      _doctorList.add(value);
                     });
                   }
                 });
@@ -52,21 +50,37 @@ class _PatientsPageState extends State<PatientsPage> {
           //     child: Text('Save', style: TextStyle(color: Colors.white))),
         ],
       ),
-      body: _patientList.length == 0
+      body: _doctorList.length == 0
           ? Center(
               child: Icon(
               Icons.people,
               size: 80,
             ))
           : ListView.builder(
-              itemCount: _patientList.length,
+              itemCount: _doctorList.length,
               itemBuilder: (context, index) => Column(
                     children: [
                       ListTile(
                         contentPadding: EdgeInsets.all(12),
-                        title: Text(_patientList[index].fullname),
-                        trailing: Icon(
-                          Icons.edit,
+                        title: Text('dr.' + _doctorList[index].name),
+                        trailing: IconButton(
+                          icon: Icon(
+                            Icons.edit,
+                          ),
+                          onPressed: () {
+                            Navigator.of(context)
+                                .push(MaterialPageRoute(
+                                    builder: (context) => EditDoctor(
+                                          doctor: _doctorList[index],
+                                        )))
+                                .then((value) {
+                              if (value != null) {
+                                setState(() {
+                                  _doctorList[index] = value;
+                                });
+                              }
+                            });
+                          },
                         ),
                         leading: Icon(
                           Icons.person,
@@ -76,11 +90,11 @@ class _PatientsPageState extends State<PatientsPage> {
                           buildShowDialog(context).then((value) {
                             if (value != null) {
                               if (value) {
-                                DatabaseHelper.deletePatient(
-                                        _patientList[index].id)
+                                DatabaseHelper.deleteDoctor(
+                                        _doctorList[index].id)
                                     .then((value) {
                                   setState(() {
-                                    _patientList.remove(_patientList[index]);
+                                    _doctorList.remove(_doctorList[index]);
                                   });
                                 });
                               }
@@ -88,20 +102,11 @@ class _PatientsPageState extends State<PatientsPage> {
                           });
                         },
                         onTap: () {
-                          widget.selectMode == null
-                              ? Navigator.of(context)
-                                  .push(MaterialPageRoute(
-                                      builder: (context) => EditPatient(
-                                            patient: _patientList[index],
-                                          )))
-                                  .then((value) {
-                                  if (value != null) {
-                                    setState(() {
-                                      _patientList[index] = value;
-                                    });
-                                  }
-                                })
-                              : Navigator.of(context).pop(_patientList[index]);
+                          Navigator.of(context)
+                              .pushReplacement(MaterialPageRoute(
+                                  builder: (context) => HomePage(
+                                        doctor: _doctorList[index],
+                                      )));
                         },
                       ),
                       Divider(

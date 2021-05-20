@@ -5,8 +5,8 @@ class Doctor {
   Doctor({this.id, this.name});
 
   Doctor.fromMap(Map<String, dynamic> map) {
-    id = map["Doctor_id"];
-    name = map["Doctor_name"];
+    id = map["doctor_id"];
+    name = map["doctor_name"];
   }
 
   Map<String, dynamic> toMap() {

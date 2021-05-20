@@ -1,28 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:med/backend/database_helper.dart';
-import 'package:med/entities/patient.dart';
-import 'package:med/screens/patient/edit_patient.dart';
+import 'package:med/entities/drug.dart';
+import 'package:med/screens/drug/add_drug.dart';
 
-import 'add_patient.dart';
+import 'edit_drug.dart';
 
-class PatientsPage extends StatefulWidget {
-  final bool selectMode;
-
-  const PatientsPage({Key key, this.selectMode}) : super(key: key);
+class DrugsPage extends StatefulWidget {
   @override
-  _PatientsPageState createState() => _PatientsPageState();
+  _DrugsPageState createState() => _DrugsPageState();
 }
 
-class _PatientsPageState extends State<PatientsPage> {
-  List<Patient> _patientList = [];
+class _DrugsPageState extends State<DrugsPage> {
+  List<Drug> _drugsList = [];
 
   @override
   void initState() {
     super.initState();
-    DatabaseHelper.selectPatient().then((value) {
+    DatabaseHelper.selectDrugs().then((value) {
       List.generate(value.length, (index) {
         setState(() {
-          _patientList.add(Patient.fromMap(value[index]));
+          _drugsList.add(Drug.fromMap(value[index]));
         });
       });
     });
@@ -32,17 +29,17 @@ class _PatientsPageState extends State<PatientsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Patients'),
+        title: Text('Drugs'),
         actions: [
           IconButton(
               icon: Icon(Icons.add),
               onPressed: () {
                 Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => AddPatient()))
+                    .push(MaterialPageRoute(builder: (context) => AddDrug()))
                     .then((value) {
                   if (value != null) {
                     setState(() {
-                      _patientList.add(value);
+                      _drugsList.add(value);
                     });
                   }
                 });
@@ -52,19 +49,19 @@ class _PatientsPageState extends State<PatientsPage> {
           //     child: Text('Save', style: TextStyle(color: Colors.white))),
         ],
       ),
-      body: _patientList.length == 0
+      body: _drugsList.length == 0
           ? Center(
               child: Icon(
               Icons.people,
               size: 80,
             ))
           : ListView.builder(
-              itemCount: _patientList.length,
+              itemCount: _drugsList.length,
               itemBuilder: (context, index) => Column(
                     children: [
                       ListTile(
                         contentPadding: EdgeInsets.all(12),
-                        title: Text(_patientList[index].fullname),
+                        title: Text(_drugsList[index].name),
                         trailing: Icon(
                           Icons.edit,
                         ),
@@ -76,11 +73,10 @@ class _PatientsPageState extends State<PatientsPage> {
                           buildShowDialog(context).then((value) {
                             if (value != null) {
                               if (value) {
-                                DatabaseHelper.deletePatient(
-                                        _patientList[index].id)
+                                DatabaseHelper.deleteDrug(_drugsList[index].id)
                                     .then((value) {
                                   setState(() {
-                                    _patientList.remove(_patientList[index]);
+                                    _drugsList.remove(_drugsList[index]);
                                   });
                                 });
                               }
@@ -88,20 +84,18 @@ class _PatientsPageState extends State<PatientsPage> {
                           });
                         },
                         onTap: () {
-                          widget.selectMode == null
-                              ? Navigator.of(context)
-                                  .push(MaterialPageRoute(
-                                      builder: (context) => EditPatient(
-                                            patient: _patientList[index],
-                                          )))
-                                  .then((value) {
-                                  if (value != null) {
-                                    setState(() {
-                                      _patientList[index] = value;
-                                    });
-                                  }
-                                })
-                              : Navigator.of(context).pop(_patientList[index]);
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(
+                                  builder: (context) => EditDrug(
+                                        drug: _drugsList[index],
+                                      )))
+                              .then((value) {
+                            if (value != null) {
+                              setState(() {
+                                _drugsList[index] = value;
+                              });
+                            }
+                          });
                         },
                       ),
                       Divider(

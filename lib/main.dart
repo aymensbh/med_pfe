@@ -1,20 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:med/backend/database_helper.dart';
-import 'package:med/screens/create_page.dart';
-import 'package:med/screens/drugs_page.dart';
+import 'package:med/utils/theme.dart';
+import './screens/splash_screen.dart';
+import 'package:med/screens/billon/billon_page.dart';
+import 'package:med/screens/billon/add_billon.dart';
+import 'package:med/screens/doctor/doctors_page.dart';
+import 'package:med/screens/drug/drugs_page.dart';
 import 'package:med/screens/home_page.dart';
 import 'package:med/screens/patient/patients_page.dart';
 
 main(List<String> args) {
-  WidgetsFlutterBinding.ensureInitialized();
-  DatabaseHelper.init();
   runApp(MaterialApp(
+    theme: themeData,
     debugShowCheckedModeBanner: false,
     routes: {
-      '/': (context) => HomePage(),
+      '/': (context) => SplashScreen(),
+      '/doctors': (context) => DoctorsPage(),
+      '/homePage': (context) => HomePage(),
       '/patients': (context) => PatientsPage(),
       '/drugs': (context) => DrugsPage(),
-      '/create': (context) => CreatePage()
+      '/billon': (context) => BillonPage(),
+      '/create': (context) => AddBillon()
     },
   ));
 }

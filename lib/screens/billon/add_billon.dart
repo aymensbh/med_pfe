@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:med/entities/patient.dart';
+import 'package:med/screens/patient/patients_page.dart';
 
-class CreatePage extends StatefulWidget {
+class AddBillon extends StatefulWidget {
   @override
-  _CreatePageState createState() => _CreatePageState();
+  _AddBillonState createState() => _AddBillonState();
 }
 
-class _CreatePageState extends State<CreatePage> {
+class _AddBillonState extends State<AddBillon> {
   int _groupValue = -1;
+  Patient _patient;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Create new'),
+        title: Text('Create new Billon'),
         actions: [
           IconButton(icon: Icon(Icons.check), onPressed: () {}),
           // TextButton(
@@ -24,9 +27,23 @@ class _CreatePageState extends State<CreatePage> {
         children: [
           ListTile(
             contentPadding: EdgeInsets.all(12),
-            title: Text('Select a Patient'),
-            trailing: Icon(Icons.add),
-            onTap: () {},
+            title:
+                Text(_patient == null ? 'Select a Patient' : _patient.fullname),
+            trailing: Icon(_patient == null ? Icons.add : Icons.edit),
+            onTap: () {
+              Navigator.of(context)
+                  .push(MaterialPageRoute(
+                      builder: (context) => PatientsPage(
+                            selectMode: true,
+                          )))
+                  .then((value) {
+                if (value != null) {
+                  setState(() {
+                    _patient = value;
+                  });
+                }
+              });
+            },
           ),
           Divider(
             height: 0,
@@ -63,14 +80,14 @@ class _CreatePageState extends State<CreatePage> {
                 enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.grey, width: .2))),
           ),
-          Container(
-            alignment: Alignment.center,
-            height: 200,
-            child: Text(
-              'Result here',
-              style: TextStyle(fontSize: 42),
-            ),
-          )
+          // Container(
+          //   alignment: Alignment.center,
+          //   height: 200,
+          //   child: Text(
+          //     'Result here',
+          //     style: TextStyle(fontSize: 42),
+          //   ),
+          // )
         ],
       ),
     );

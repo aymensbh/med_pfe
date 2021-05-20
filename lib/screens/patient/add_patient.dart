@@ -48,6 +48,7 @@ class _AddPatientState extends State<AddPatient> {
         child: ListView(
           children: [
             TextFormField(
+              autofocus: true,
               validator: (input) {
                 if (input.trim().isEmpty) {
                   return 'value is empty';

@@ -34,7 +34,7 @@ class _EditPatientState extends State<EditPatient> {
     //TODO: Edit This
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-      DatabaseHelper.updatePatient(Patient(
+      DatabaseHelper.updatePatients(Patient(
         id: widget.patient.id,
         fullname: _fullName,
         address: _address,
@@ -66,6 +66,7 @@ class _EditPatientState extends State<EditPatient> {
         child: ListView(
           children: [
             TextFormField(
+              autofocus: true,
               controller: _fullNameController,
               validator: (input) {
                 if (input.trim().isEmpty) {
