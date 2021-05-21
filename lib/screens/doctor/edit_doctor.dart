@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:med/backend/database_helper.dart';
 import 'package:med/entities/doctor.dart';
 
@@ -43,29 +44,41 @@ class _EditDoctorState extends State<EditDoctor> {
       appBar: AppBar(
         title: Text('Edit Doctor'),
         actions: [
-          IconButton(icon: Icon(Icons.check), onPressed: _validate),
+          IconButton(
+              icon: Icon(
+                FontAwesomeIcons.check,
+                size: 18,
+              ),
+              onPressed: _validate),
         ],
       ),
       body: Form(
         key: _formKey,
         child: ListView(
           children: [
-            TextFormField(
-              autofocus: true,
-              controller: _nameController,
-              validator: (input) {
-                if (input.trim().isEmpty) {
-                  return 'value is empty';
-                }
-              },
-              onSaved: (input) {
-                _name = input.trim();
-              },
-              decoration: InputDecoration(
-                  contentPadding: EdgeInsets.all(18),
-                  hintText: 'Full Name',
-                  enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey, width: .2))),
+            Card(
+              margin: EdgeInsets.all(12),
+              child: TextFormField(
+                autofocus: true,
+                style: Theme.of(context)
+                    .textTheme
+                    .headline2
+                    .copyWith(color: Colors.black),
+                controller: _nameController,
+                validator: (input) {
+                  if (input.trim().isEmpty) {
+                    return 'value is empty';
+                  }
+                },
+                onSaved: (input) {
+                  _name = input.trim();
+                },
+                decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(18),
+                    hintText: 'Full Name',
+                    enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey, width: .2))),
+              ),
             ),
           ],
         ),

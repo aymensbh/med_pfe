@@ -47,66 +47,94 @@ class _AddPatientState extends State<AddPatient> {
         key: _formKey,
         child: ListView(
           children: [
-            TextFormField(
-              autofocus: true,
-              validator: (input) {
-                if (input.trim().isEmpty) {
-                  return 'value is empty';
-                }
-              },
-              onSaved: (input) {
-                _fullName = input.trim();
-              },
-              decoration: InputDecoration(
-                  contentPadding: EdgeInsets.all(18),
-                  hintText: 'Full Name',
-                  enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey, width: .2))),
+            Card(
+              margin: EdgeInsets.fromLTRB(12, 12, 12, 0),
+              child: TextFormField(
+                autofocus: true,
+                style: Theme.of(context)
+                    .textTheme
+                    .headline2
+                    .copyWith(color: Colors.black),
+                validator: (input) {
+                  if (input.trim().isEmpty) {
+                    return 'value is empty';
+                  }
+                },
+                onSaved: (input) {
+                  _fullName = input.trim();
+                },
+                decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(18),
+                    hintText: 'Full Name',
+                    enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey, width: .2))),
+              ),
             ),
-            TextFormField(
-              validator: (input) {
-                if (input.trim().isEmpty) {
-                  return 'value is empty';
-                }
-              },
-              onSaved: (input) {
-                _birthdate = input.trim();
-              },
-              decoration: InputDecoration(
-                  contentPadding: EdgeInsets.all(18),
-                  hintText: 'Birthdate',
-                  enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey, width: .2))),
+            Card(
+              margin: EdgeInsets.fromLTRB(12, 12, 12, 0),
+              child: TextFormField(
+                style: Theme.of(context)
+                    .textTheme
+                    .headline2
+                    .copyWith(color: Colors.black),
+                validator: (input) {
+                  if (input.trim().isEmpty) {
+                    return 'value is empty';
+                  }
+                },
+                onSaved: (input) {
+                  _birthdate = input.trim();
+                },
+                decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(18),
+                    hintText: 'Birthdate',
+                    enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey, width: .2))),
+              ),
             ),
-            TextFormField(
-              validator: (input) {
-                if (input.trim().isEmpty) {
-                  return 'value is empty';
-                }
-              },
-              onSaved: (input) {
-                _address = input.trim();
-              },
-              decoration: InputDecoration(
-                  contentPadding: EdgeInsets.all(18),
-                  hintText: 'Address',
-                  enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey, width: .2))),
+            Card(
+              margin: EdgeInsets.fromLTRB(12, 12, 12, 0),
+              child: TextFormField(
+                style: Theme.of(context)
+                    .textTheme
+                    .headline2
+                    .copyWith(color: Colors.black),
+                validator: (input) {
+                  if (input.trim().isEmpty) {
+                    return 'value is empty';
+                  }
+                },
+                onSaved: (input) {
+                  _address = input.trim();
+                },
+                decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(18),
+                    hintText: 'Address',
+                    enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey, width: .2))),
+              ),
             ),
-            TextFormField(
-              validator: (input) {
-                if (input.trim().isEmpty) {
-                  return 'value is empty';
-                }
-              },
-              onSaved: (input) {
-                _phone = input.trim();
-              },
-              decoration: InputDecoration(
-                  contentPadding: EdgeInsets.all(18),
-                  hintText: 'Phone',
-                  enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey, width: .2))),
+            Card(
+              margin: EdgeInsets.fromLTRB(12, 12, 12, 0),
+              child: TextFormField(
+                style: Theme.of(context)
+                    .textTheme
+                    .headline2
+                    .copyWith(color: Colors.black),
+                validator: (input) {
+                  if (input.trim().isEmpty) {
+                    return 'value is empty';
+                  }
+                },
+                onSaved: (input) {
+                  _phone = input.trim();
+                },
+                decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(18),
+                    hintText: 'Phone',
+                    enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey, width: .2))),
+              ),
             )
           ],
         ),

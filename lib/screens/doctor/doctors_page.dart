@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:med/backend/database_helper.dart';
 import 'package:med/entities/doctor.dart';
 import 'package:med/screens/home_page.dart';
@@ -30,10 +31,13 @@ class _DoctorsPageState extends State<DoctorsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login'),
+        title: Text('Select a Doctor'),
         actions: [
           IconButton(
-              icon: Icon(Icons.add),
+              icon: Icon(
+                FontAwesomeIcons.plus,
+                size: 18,
+              ),
               onPressed: () {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) => AddDoctor()))
@@ -45,74 +49,97 @@ class _DoctorsPageState extends State<DoctorsPage> {
                   }
                 });
               }),
-          // TextButton(
-          //     onPressed: () {},
-          //     child: Text('Save', style: TextStyle(color: Colors.white))),
         ],
       ),
       body: _doctorList.length == 0
           ? Center(
-              child: Icon(
-              Icons.people,
-              size: 80,
+              child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'assets/images/doctor.png',
+                  width: 180,
+                ),
+                SizedBox(
+                  height: 18,
+                ),
+                Text(
+                  'No Doctors Added!',
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline1
+                      .copyWith(color: Colors.black),
+                ),
+                Text(
+                  'Tap + to add',
+                  style: Theme.of(context).textTheme.headline2,
+                )
+              ],
             ))
           : ListView.builder(
               itemCount: _doctorList.length,
-              itemBuilder: (context, index) => Column(
-                    children: [
-                      ListTile(
-                        contentPadding: EdgeInsets.all(12),
-                        title: Text('dr.' + _doctorList[index].name),
-                        trailing: IconButton(
-                          icon: Icon(
-                            Icons.edit,
-                          ),
-                          onPressed: () {
-                            Navigator.of(context)
-                                .push(MaterialPageRoute(
-                                    builder: (context) => EditDoctor(
-                                          doctor: _doctorList[index],
-                                        )))
-                                .then((value) {
-                              if (value != null) {
-                                setState(() {
-                                  _doctorList[index] = value;
-                                });
-                              }
-                            });
-                          },
+              itemBuilder: (context, index) => Card(
+                    margin: EdgeInsets.fromLTRB(12, 12, 12, 0),
+                    child: ListTile(
+                      contentPadding: EdgeInsets.fromLTRB(18, 8, 8, 8),
+                      title: Text(
+                        'dr.' + _doctorList[index].name,
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline2
+                            .copyWith(color: Colors.black),
+                      ),
+                      trailing: IconButton(
+                        icon: Icon(
+                          FontAwesomeIcons.penAlt,
+                          size: 18,
                         ),
-                        leading: Icon(
-                          Icons.person,
-                          color: Colors.black,
-                        ),
-                        onLongPress: () {
-                          buildShowDialog(context).then((value) {
+                        onPressed: () {
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(
+                                  builder: (context) => EditDoctor(
+                                        doctor: _doctorList[index],
+                                      )))
+                              .then((value) {
                             if (value != null) {
-                              if (value) {
-                                DatabaseHelper.deleteDoctor(
-                                        _doctorList[index].id)
-                                    .then((value) {
-                                  setState(() {
-                                    _doctorList.remove(_doctorList[index]);
-                                  });
-                                });
-                              }
+                              setState(() {
+                                _doctorList[index] = value;
+                              });
                             }
                           });
                         },
-                        onTap: () {
-                          Navigator.of(context)
-                              .pushReplacement(MaterialPageRoute(
-                                  builder: (context) => HomePage(
-                                        doctor: _doctorList[index],
-                                      )));
-                        },
                       ),
-                      Divider(
-                        height: 0,
+                      leading: CircleAvatar(
+                        backgroundColor: Colors.orange,
+                        child: Text(
+                          _doctorList[index].name[0],
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline1
+                              .copyWith(color: Colors.white),
+                        ),
                       ),
-                    ],
+                      onLongPress: () {
+                        buildShowDialog(context).then((value) {
+                          if (value != null) {
+                            if (value) {
+                              DatabaseHelper.deleteDoctor(_doctorList[index].id)
+                                  .then((value) {
+                                setState(() {
+                                  _doctorList.remove(_doctorList[index]);
+                                });
+                              });
+                            }
+                          }
+                        });
+                      },
+                      onTap: () {
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                            builder: (context) => HomePage(
+                                  doctor: _doctorList[index],
+                                )));
+                      },
+                    ),
                   )),
     );
   }
@@ -122,18 +149,37 @@ class _DoctorsPageState extends State<DoctorsPage> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Delete?'),
+            elevation: 1,
+            title: Text(
+              'Delete doctor?',
+              style: Theme.of(context)
+                  .textTheme
+                  .headline2
+                  .copyWith(color: Colors.black),
+            ),
             actions: [
               TextButton(
                   onPressed: () {
                     Navigator.of(context).pop(false);
                   },
-                  child: Text('Cancel', style: TextStyle(color: Colors.black))),
+                  child: Text(
+                    'Cancel',
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline3
+                        .copyWith(color: Colors.black),
+                  )),
               TextButton(
                   onPressed: () {
                     Navigator.of(context).pop(true);
                   },
-                  child: Text('Delete', style: TextStyle(color: Colors.red))),
+                  child: Text(
+                    'Delete',
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline3
+                        .copyWith(color: Colors.red),
+                  )),
             ],
           );
         });

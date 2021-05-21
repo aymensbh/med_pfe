@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:med/backend/database_helper.dart';
 import 'package:med/entities/patient.dart';
 
@@ -58,77 +59,110 @@ class _EditPatientState extends State<EditPatient> {
       appBar: AppBar(
         title: Text('Patients'),
         actions: [
-          IconButton(icon: Icon(Icons.check), onPressed: _validate),
+          IconButton(
+              icon: Icon(
+                FontAwesomeIcons.check,
+                size: 18,
+              ),
+              onPressed: _validate),
         ],
       ),
       body: Form(
         key: _formKey,
         child: ListView(
           children: [
-            TextFormField(
-              autofocus: true,
-              controller: _fullNameController,
-              validator: (input) {
-                if (input.trim().isEmpty) {
-                  return 'value is empty';
-                }
-              },
-              onSaved: (input) {
-                _fullName = input.trim();
-              },
-              decoration: InputDecoration(
-                  contentPadding: EdgeInsets.all(18),
-                  hintText: 'Full Name',
-                  enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey, width: .2))),
+            Card(
+              margin: EdgeInsets.fromLTRB(12, 12, 12, 0),
+              child: TextFormField(
+                style: Theme.of(context)
+                    .textTheme
+                    .headline2
+                    .copyWith(color: Colors.black),
+                autofocus: true,
+                controller: _fullNameController,
+                validator: (input) {
+                  if (input.trim().isEmpty) {
+                    return 'value is empty';
+                  }
+                },
+                onSaved: (input) {
+                  _fullName = input.trim();
+                },
+                decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(18),
+                    hintText: 'Full Name',
+                    enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey, width: .2))),
+              ),
             ),
-            TextFormField(
-              controller: _birthdateController,
-              validator: (input) {
-                if (input.trim().isEmpty) {
-                  return 'value is empty';
-                }
-              },
-              onSaved: (input) {
-                _birthdate = input.trim();
-              },
-              decoration: InputDecoration(
-                  contentPadding: EdgeInsets.all(18),
-                  hintText: 'Birthdate',
-                  enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey, width: .2))),
+            Card(
+              margin: EdgeInsets.fromLTRB(12, 12, 12, 0),
+              child: TextFormField(
+                style: Theme.of(context)
+                    .textTheme
+                    .headline2
+                    .copyWith(color: Colors.black),
+                controller: _birthdateController,
+                validator: (input) {
+                  if (input.trim().isEmpty) {
+                    return 'value is empty';
+                  }
+                },
+                onSaved: (input) {
+                  _birthdate = input.trim();
+                },
+                decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(18),
+                    hintText: 'Birthdate',
+                    enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey, width: .2))),
+              ),
             ),
-            TextFormField(
-              controller: _addressController,
-              validator: (input) {
-                if (input.trim().isEmpty) {
-                  return 'value is empty';
-                }
-              },
-              onSaved: (input) {
-                _address = input.trim();
-              },
-              decoration: InputDecoration(
-                  contentPadding: EdgeInsets.all(18),
-                  hintText: 'Address',
-                  enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey, width: .2))),
+            Card(
+              margin: EdgeInsets.fromLTRB(12, 12, 12, 0),
+              child: TextFormField(
+                style: Theme.of(context)
+                    .textTheme
+                    .headline2
+                    .copyWith(color: Colors.black),
+                controller: _addressController,
+                validator: (input) {
+                  if (input.trim().isEmpty) {
+                    return 'value is empty';
+                  }
+                },
+                onSaved: (input) {
+                  _address = input.trim();
+                },
+                decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(18),
+                    hintText: 'Address',
+                    enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey, width: .2))),
+              ),
             ),
-            TextFormField(
-              controller: _phoneController,
-              validator: (input) {
-                if (input.trim().isEmpty) {
-                  return 'value is empty';
-                }
-              },
-              onSaved: (input) {
-                _phone = input.trim();
-              },
-              decoration: InputDecoration(
-                  contentPadding: EdgeInsets.all(18),
-                  hintText: 'Phone',
-                  enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey, width: .2))),
+            Card(
+              margin: EdgeInsets.fromLTRB(12, 12, 12, 0),
+              child: TextFormField(
+                style: Theme.of(context)
+                    .textTheme
+                    .headline2
+                    .copyWith(color: Colors.black),
+                controller: _phoneController,
+                validator: (input) {
+                  if (input.trim().isEmpty) {
+                    return 'value is empty';
+                  }
+                },
+                onSaved: (input) {
+                  _phone = input.trim();
+                },
+                decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(18),
+                    hintText: 'Phone',
+                    enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey, width: .2))),
+              ),
             )
           ],
         ),

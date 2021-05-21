@@ -3,7 +3,7 @@ import 'package:sqflite/sqflite.dart';
 import '../entities/doctor.dart';
 import '../entities/drug.dart';
 import '../entities/patient.dart';
-import '../entities/billon.dart';
+import '../entities/bilan.dart';
 
 class DatabaseHelper {
   static Database _db;
@@ -30,8 +30,8 @@ class DatabaseHelper {
           .catchError((onError) => print(onError));
       ;
       await db
-          .execute(createBillonTable)
-          .then((value) => print('Billon table created!'))
+          .execute(createBilanTable)
+          .then((value) => print('Bilan table created!'))
           .catchError((onError) => print(onError));
       ;
     });
@@ -119,10 +119,31 @@ class DatabaseHelper {
     return await _db.delete("drug", where: "drug_id = ?", whereArgs: [id]);
   }
 
-  //billon
-  static Future<int> insertBillon(Billon billon) async {
-    return await _db.insert("billon", billon.toMap(),
+  //bilan
+  static Future<int> insertBilan(Bilan bilan) async {
+    return await _db.insert("bilan", bilan.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  static Future<List<Map<String, dynamic>>> selectBilan() async {
+    return await _db.query(
+      "bilan",
+      distinct: true,
+    );
+  }
+
+  static Future<int> updateBilan(Bilan bilan) async {
+    return await _db.update(
+      "bilan",
+      bilan.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+      where: 'bilan_id = ?',
+      whereArgs: [bilan.id],
+    );
+  }
+
+  static Future<int> deleteBilan(int id) async {
+    return await _db.delete("bilan", where: "bilan_id = ?", whereArgs: [id]);
   }
 
   static String createDoctorTable = """
@@ -149,11 +170,12 @@ class DatabaseHelper {
     );
   """;
 
-  static String createBillonTable = """
-  CREATE TABLE IF NOT EXISTS billon(
-    "billon_id"	INTEGER PRIMARY KEY AUTOINCREMENT,
-    "billon_creationdate" TEXT,
-    "billon_type" INTEGER,
+  static String createBilanTable = """
+  CREATE TABLE IF NOT EXISTS bilan(
+    "bilan_id"	INTEGER PRIMARY KEY AUTOINCREMENT,
+    "bilan_creationdate" TEXT,
+    "bilan_type" TEXT,
+    "bilan_dose" TEXT,
     "drug_id" INTEGER,
     "patient_id" INTEGER,
     "doctor_id" INTEGER,

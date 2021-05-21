@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:med/entities/doctor.dart';
+import 'package:med/screens/bilan/add_bilan.dart';
+import 'package:med/widgets/custom_card.dart';
 
 class HomePage extends StatefulWidget {
   final Doctor doctor;
@@ -15,16 +18,23 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.create),
+        child: Icon(FontAwesomeIcons.plus, size: 18, color: Colors.white),
+        elevation: 2,
+        backgroundColor: Colors.orange,
         onPressed: () {
-          Navigator.pushNamed(context, '/create');
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => AddBilan(
+                        doctorid: widget.doctor.id,
+                      )));
         },
       ),
       appBar: AppBar(
         title: Text('Hello! dr. ${widget.doctor.name}'),
         actions: [
           IconButton(
-              icon: Icon(Icons.keyboard_arrow_down_rounded),
+              icon: Icon(FontAwesomeIcons.chevronDown, size: 18),
               onPressed: () {
                 showModalBottomSheet(
                     context: context,
@@ -32,15 +42,20 @@ class _HomePageState extends State<HomePage> {
                         onClosing: () {},
                         builder: (context) {
                           return ListTile(
+                            contentPadding: EdgeInsets.fromLTRB(18, 4, 18, 4),
                             onTap: () {
                               Navigator.of(context).pop(true);
                             },
                             leading: Text(
-                              'Logout',
-                              style: TextStyle(color: Colors.red),
+                              'Sign-out',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline2
+                                  .copyWith(color: Colors.red),
                             ),
                             trailing: Icon(
-                              Icons.exit_to_app,
+                              FontAwesomeIcons.signOutAlt,
+                              size: 18,
                               color: Colors.red,
                             ),
                           );
@@ -52,54 +67,33 @@ class _HomePageState extends State<HomePage> {
               })
         ],
       ),
-      body: ListView(
+      body: GridView(
+        padding: EdgeInsets.all(12),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2, mainAxisSpacing: 12, crossAxisSpacing: 12),
+        shrinkWrap: true,
+        physics: BouncingScrollPhysics(),
         children: [
-          //TODO: Edit patient tile ************************************
-          ListTile(
-            contentPadding: EdgeInsets.all(12),
-            leading: Icon(
-              Icons.people,
-              color: Colors.black,
-            ),
-            title: Text('Patients'),
-            trailing: Icon(Icons.arrow_forward),
+          CustomGridCard(
+            imagePath: 'assets/images/patient.png',
+            title: 'Patients',
             onTap: () {
               Navigator.pushNamed(context, '/patients');
             },
           ),
-          Divider(
-            height: 0,
-          ),
-          //TODO: Edit drugs tile **************************************
-          ListTile(
-            contentPadding: EdgeInsets.all(12),
-            leading: Icon(
-              Icons.inbox,
-              color: Colors.black,
-            ),
-            title: Text('Drugs'),
-            trailing: Icon(Icons.arrow_forward),
+          CustomGridCard(
+            imagePath: 'assets/images/drug.png',
+            title: 'Drugs',
             onTap: () {
               Navigator.pushNamed(context, '/drugs');
             },
           ),
-          Divider(
-            height: 0,
-          ),
-          ListTile(
-            contentPadding: EdgeInsets.all(12),
-            leading: Icon(
-              Icons.file_copy_outlined,
-              color: Colors.black,
-            ),
-            title: Text('Billon history'),
-            trailing: Icon(Icons.arrow_forward),
+          CustomGridCard(
+            imagePath: 'assets/images/bilan.png',
+            title: 'Bilan history',
             onTap: () {
-              Navigator.pushNamed(context, '/billon');
+              Navigator.pushNamed(context, '/bilan');
             },
-          ),
-          Divider(
-            height: 0,
           ),
         ],
       ),
