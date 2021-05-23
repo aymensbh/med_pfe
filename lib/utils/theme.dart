@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 final themeData = ThemeData(
     accentColor: Color(0xff34B4B7),
     primarySwatch: Colors.teal,
+    canvasColor: Colors.transparent,
     textTheme: TextTheme(
       headline1: TextStyle(fontFamily: 'product-sans', fontSize: 22),
       headline2: TextStyle(fontFamily: 'product-sans', fontSize: 18),

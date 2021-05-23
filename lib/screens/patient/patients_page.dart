@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:med/backend/database_helper.dart';
@@ -16,6 +17,7 @@ class PatientsPage extends StatefulWidget {
 
 class _PatientsPageState extends State<PatientsPage> {
   List<Patient> _patientList = [];
+  List<Patient> _duplicatedSearchItems = [];
 
   @override
   void initState() {
@@ -24,6 +26,7 @@ class _PatientsPageState extends State<PatientsPage> {
       List.generate(value.length, (index) {
         setState(() {
           _patientList.add(Patient.fromMap(value[index]));
+          _duplicatedSearchItems.add(Patient.fromMap(value[index]));
         });
       });
     });
@@ -33,7 +36,34 @@ class _PatientsPageState extends State<PatientsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Patients'),
+        title: TextField(
+          onChanged: (input) {
+            filterSearchResults(input);
+          },
+          style: Theme.of(context)
+              .textTheme
+              .headline2
+              .copyWith(color: Colors.white),
+          textAlignVertical: TextAlignVertical.bottom,
+          cursorColor: Colors.white,
+          decoration: InputDecoration(
+              icon: Icon(
+                FontAwesomeIcons.search,
+                color: Colors.white,
+                size: 18,
+              ),
+              hintText: 'Patients',
+              hintStyle: Theme.of(context)
+                  .textTheme
+                  .headline2
+                  .copyWith(color: Colors.white),
+              focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(
+                      color: Theme.of(context).accentColor, width: 0)),
+              enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(
+                      color: Theme.of(context).accentColor, width: 1))),
+        ),
         actions: [
           IconButton(
               icon: Icon(
@@ -42,12 +72,23 @@ class _PatientsPageState extends State<PatientsPage> {
               ),
               onPressed: () {
                 Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => AddPatient()))
+                    .push(
+                        CupertinoPageRoute(builder: (context) => AddPatient()))
                     .then((value) {
                   if (value != null) {
                     setState(() {
                       _patientList.add(value);
                     });
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        backgroundColor: Theme.of(context).accentColor,
+                        duration: Duration(seconds: 1),
+                        content: Text(
+                          'Added ${value.fullname}',
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline3
+                              .copyWith(color: Colors.white),
+                        )));
                   }
                 });
               }),
@@ -123,7 +164,7 @@ class _PatientsPageState extends State<PatientsPage> {
                       onTap: () {
                         widget.selectMode == null
                             ? Navigator.of(context)
-                                .push(MaterialPageRoute(
+                                .push(CupertinoPageRoute(
                                     builder: (context) => EditPatient(
                                           patient: _patientList[index],
                                         )))
@@ -180,5 +221,31 @@ class _PatientsPageState extends State<PatientsPage> {
             ],
           );
         });
+  }
+
+  filterSearchResults(String query) {
+    List<Patient> dummySearchList = [];
+    dummySearchList.addAll(_patientList);
+    if (query.isNotEmpty) {
+      List<Patient> dummyListData = [];
+      dummySearchList.forEach((item) {
+        if (item.fullname
+            .toLowerCase()
+            .trim()
+            .contains(query.toLowerCase().trim())) {
+          dummyListData.add(item);
+        }
+      });
+      setState(() {
+        _patientList.clear();
+        _patientList.addAll(dummyListData);
+      });
+      return;
+    } else {
+      setState(() {
+        _patientList.clear();
+        _patientList.addAll(_duplicatedSearchItems);
+      });
+    }
   }
 }

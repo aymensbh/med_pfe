@@ -1,23 +1,30 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:med/backend/database_helper.dart';
 import 'package:med/entities/bilan.dart';
+import 'package:med/screens/bilan/view_bilan.dart';
 
 class BilanPage extends StatefulWidget {
+  final int doctorid;
+
+  const BilanPage({Key key, this.doctorid}) : super(key: key);
   @override
   _BilanPageState createState() => _BilanPageState();
 }
 
 class _BilanPageState extends State<BilanPage> {
   List<Bilan> _bilanList = [];
+  List<Bilan> _duplicatedSearchItems = [];
 
   @override
   void initState() {
     super.initState();
-    DatabaseHelper.selectBilan().then((value) {
+    DatabaseHelper.selectBilan(widget.doctorid).then((value) {
       List.generate(value.length, (index) {
         setState(() {
           _bilanList.add(Bilan.fromMap(value[index]));
+          _duplicatedSearchItems.add(Bilan.fromMap(value[index]));
         });
       });
     });
@@ -27,27 +34,35 @@ class _BilanPageState extends State<BilanPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Bilan history'),
+        title: TextField(
+          onChanged: (input) {
+            filterSearchResults(input);
+          },
+          style: Theme.of(context)
+              .textTheme
+              .headline2
+              .copyWith(color: Colors.white),
+          textAlignVertical: TextAlignVertical.bottom,
+          cursorColor: Colors.white,
+          decoration: InputDecoration(
+              icon: Icon(
+                FontAwesomeIcons.search,
+                color: Colors.white,
+                size: 18,
+              ),
+              hintText: 'Bilans History',
+              hintStyle: Theme.of(context)
+                  .textTheme
+                  .headline2
+                  .copyWith(color: Colors.white),
+              focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(
+                      color: Theme.of(context).accentColor, width: 0)),
+              enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(
+                      color: Theme.of(context).accentColor, width: 1))),
+        ),
       ),
-      // actions: [
-      //   IconButton(
-      //       icon: Icon(Icons.add),
-      //       onPressed: () {
-      //         Navigator.of(context)
-      //             .push(MaterialPageRoute(builder: (context) => AddBilan()))
-      //             .then((value) {
-      //           if (value != null) {
-      //             setState(() {
-      //               _bilanList.add(value);
-      //             });
-      //           }
-      //         });
-      //       }),
-      //   // TextButton(
-      //   //     onPressed: () {},
-      //   //     child: Text('Save', style: TextStyle(color: Colors.white))),
-      // ],
-
       body: _bilanList.length == 0
           ? Center(
               child: Column(
@@ -84,7 +99,7 @@ class _BilanPageState extends State<BilanPage> {
                               .textTheme
                               .headline2
                               .copyWith(color: Colors.black)),
-                      subtitle: Text('dose: ' + _bilanList[index].dose + 'ml',
+                      subtitle: Text('dose: ' + _bilanList[index].dose,
                           style: Theme.of(context).textTheme.headline3),
                       trailing: Icon(
                         FontAwesomeIcons.arrowRight,
@@ -109,20 +124,12 @@ class _BilanPageState extends State<BilanPage> {
                           }
                         });
                       },
-                      // onTap: () {
-                      //   Navigator.of(context)
-                      //       .push(MaterialPageRoute(
-                      //           builder: (context) => EditDrug(
-                      //                 drug: _drugsList[index],
-                      //               )))
-                      //       .then((value) {
-                      //     if (value != null) {
-                      //       setState(() {
-                      //         _drugsList[index] = value;
-                      //       });
-                      //     }
-                      //   });
-                      // },
+                      onTap: () {
+                        Navigator.of(context).push(CupertinoPageRoute(
+                            builder: (context) => ViewBilan(
+                                  bilanid: _bilanList[index].id,
+                                )));
+                      },
                     ),
                   )),
     );
@@ -167,5 +174,35 @@ class _BilanPageState extends State<BilanPage> {
             ],
           );
         });
+  }
+
+  filterSearchResults(String query) {
+    List<Bilan> dummySearchList = [];
+    dummySearchList.addAll(_bilanList);
+    if (query.isNotEmpty) {
+      List<Bilan> dummyListData = [];
+      dummySearchList.forEach((item) {
+        if (item.dose
+                .toLowerCase()
+                .trim()
+                .contains(query.toLowerCase().trim()) ||
+            item.creationdate
+                .toLowerCase()
+                .trim()
+                .contains(query.toLowerCase().trim())) {
+          dummyListData.add(item);
+        }
+      });
+      setState(() {
+        _bilanList.clear();
+        _bilanList.addAll(dummyListData);
+      });
+      return;
+    } else {
+      setState(() {
+        _bilanList.clear();
+        _bilanList.addAll(_duplicatedSearchItems);
+      });
+    }
   }
 }

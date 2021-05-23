@@ -17,10 +17,12 @@ class AddBilan extends StatefulWidget {
 }
 
 class _AddBilanState extends State<AddBilan> {
-  String _dose = '0.0';
+  String _dose = '/';
   Patient _patient;
   Drug _drug;
-  bool _isCr = false, _isBr = false, _isTgoTgp = false;
+  TextEditingController crController = TextEditingController(),
+      brController = TextEditingController(),
+      tgoTgpController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -38,31 +40,47 @@ class _AddBilanState extends State<AddBilan> {
                   showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
-                            title: Text('Please fill info correctly!'),
+                            title: Text(
+                              'Please fill info correctly!',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline2
+                                  .copyWith(color: Colors.black),
+                            ),
                             elevation: 1,
                             actions: [
                               TextButton(
                                   onPressed: () {
                                     Navigator.of(context).pop();
                                   },
-                                  child: Text('Ok'))
+                                  child: Text(
+                                    'Ok',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline3
+                                        .copyWith(color: Colors.black),
+                                  ))
                             ],
                           ));
                 } else {
-                  String bilanType = '';
-                  if (_isCr) bilanType += 'CR ';
-                  if (_isBr) bilanType += 'BR ';
-                  if (_isTgoTgp) bilanType += 'TGO/TGP';
                   DatabaseHelper.insertBilan(Bilan(
-                          id: null,
-                          creationdate: DateFormat('yyyy-MM-dd – kk:mm')
-                              .format(DateTime.now()),
-                          doctorid: widget.doctorid,
-                          dose: _dose,
-                          drugid: _drug.id,
-                          patientid: _patient.id,
-                          type: bilanType))
-                      .then((value) {
+                    id: null,
+                    creationdate:
+                        DateFormat('yyyy-MM-dd – kk:mm').format(DateTime.now()),
+                    doctorid: widget.doctorid,
+                    dose: _dose,
+                    drugid: _drug.id,
+                    patientid: _patient.id,
+                    br: brController.text.trim().isEmpty
+                        ? '/'
+                        : brController.text.trim(),
+                    cr: crController.text.trim().isEmpty
+                        ? '/'
+                        : crController.text.trim(),
+                    tgoTgp: tgoTgpController.text.trim().isEmpty
+                        ? '/'
+                        : tgoTgpController.text.trim(),
+                  )).then((value) {
                     Navigator.of(context).pop();
                   });
                 }
@@ -74,7 +92,7 @@ class _AddBilanState extends State<AddBilan> {
           Card(
             margin: EdgeInsets.fromLTRB(12, 12, 12, 0),
             child: ListTile(
-              contentPadding: EdgeInsets.fromLTRB(18, 8, 18, 8),
+              contentPadding: EdgeInsets.fromLTRB(18, 2, 18, 2),
               title: Text(
                   _patient == null ? 'Select a Patient' : _patient.fullname,
                   style: Theme.of(context).textTheme.headline2.copyWith(
@@ -105,7 +123,7 @@ class _AddBilanState extends State<AddBilan> {
           Card(
             margin: EdgeInsets.fromLTRB(12, 12, 12, 0),
             child: ListTile(
-              contentPadding: EdgeInsets.fromLTRB(18, 8, 18, 8),
+              contentPadding: EdgeInsets.fromLTRB(18, 2, 18, 2),
               title: Text(_drug == null ? 'Select a Drug' : _drug.name,
                   style: Theme.of(context).textTheme.headline2.copyWith(
                       color: _drug == null ? Colors.grey : Colors.black)),
@@ -131,81 +149,87 @@ class _AddBilanState extends State<AddBilan> {
             ),
           ),
           Card(
-            margin: EdgeInsets.fromLTRB(12, 12, 12, 0),
-            child: Column(
-              children: [
-                CheckboxListTile(
-                  value: _isCr,
-                  onChanged: (value) {
-                    setState(() {
-                      _isCr = value;
-                    });
-                  },
-                  title: Text(
-                    "CR",
+              margin: EdgeInsets.fromLTRB(12, 12, 12, 0),
+              child: ExpansionTile(
+                title: Text(
+                  'Demanded Bilans',
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline2
+                      .copyWith(color: Colors.black),
+                ),
+                children: <Widget>[
+                  TextField(
+                    onChanged: (value) {
+                      _calculateDose();
+                    },
+                    controller: crController,
+                    keyboardType: TextInputType.number,
                     style: Theme.of(context)
                         .textTheme
                         .headline2
                         .copyWith(color: Colors.black),
+                    decoration: InputDecoration(
+                        suffix: Text(
+                          'ml/min',
+                        ),
+                        contentPadding: EdgeInsets.all(18),
+                        hintText: 'Cr',
+                        focusedBorder: UnderlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.white, width: 1)),
+                        enabledBorder: UnderlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.white, width: 1))),
                   ),
-                ),
-                Divider(
-                  height: 0,
-                ),
-                CheckboxListTile(
-                  value: _isBr,
-                  onChanged: (value) {
-                    setState(() {
-                      _isBr = value;
-                    });
-                  },
-                  title: Text(
-                    "BR",
+                  TextField(
+                    onChanged: (value) {
+                      _calculateDose();
+                    },
+                    controller: brController,
+                    keyboardType: TextInputType.number,
                     style: Theme.of(context)
                         .textTheme
                         .headline2
                         .copyWith(color: Colors.black),
+                    decoration: InputDecoration(
+                        suffix: Text(
+                          'ml/min',
+                        ),
+                        contentPadding: EdgeInsets.all(18),
+                        hintText: 'Br',
+                        focusedBorder: UnderlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.white, width: 1)),
+                        enabledBorder: UnderlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.white, width: 1))),
                   ),
-                ),
-                Divider(
-                  height: 0,
-                ),
-                CheckboxListTile(
-                  value: _isTgoTgp,
-                  onChanged: (value) {
-                    setState(() {
-                      _isTgoTgp = value;
-                    });
-                  },
-                  title: Text(
-                    "TGO/TGP",
+                  TextField(
+                    onChanged: (value) {
+                      _calculateDose();
+                    },
+                    controller: tgoTgpController,
+                    keyboardType: TextInputType.number,
                     style: Theme.of(context)
                         .textTheme
                         .headline2
                         .copyWith(color: Colors.black),
+                    decoration: InputDecoration(
+                        suffix: Text(
+                          'ml/min',
+                        ),
+                        contentPadding: EdgeInsets.all(18),
+                        hintText: 'Tgo/Tgp',
+                        focusedBorder: UnderlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.white, width: 1)),
+                        enabledBorder: UnderlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.white, width: 1))),
                   ),
-                ),
-                Divider(
-                  height: 0,
-                ),
-              ],
-            ),
-          ),
-          Card(
-            margin: EdgeInsets.fromLTRB(12, 12, 12, 0),
-            child: TextField(
-              keyboardType: TextInputType.number,
-              style: Theme.of(context)
-                  .textTheme
-                  .headline2
-                  .copyWith(color: Colors.black),
-              decoration: InputDecoration(
-                  contentPadding: EdgeInsets.all(18),
-                  hintText: 'Enter value in ml',
-                  enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey, width: .2))),
-            ),
-          ),
+                ],
+              )),
           Card(
             margin: EdgeInsets.fromLTRB(12, 12, 12, 0),
             child: ListTile(
@@ -217,28 +241,13 @@ class _AddBilanState extends State<AddBilan> {
                     .copyWith(color: Colors.black),
               ),
               trailing: Text(
-                ' $_dose ml',
+                '$_dose',
                 style: Theme.of(context)
                     .textTheme
-                    .headline2
-                    .copyWith(color: Colors.orange),
+                    .headline1
+                    .copyWith(color: Colors.black),
               ),
             ),
-          ),
-          Container(
-            margin: EdgeInsets.fromLTRB(12, 12, 12, 0),
-            child: MaterialButton(
-                padding: EdgeInsets.fromLTRB(0, 12, 0, 12),
-                color: Color(0xff34B4B7),
-                elevation: 1,
-                onPressed: _calculateDose,
-                child: Text(
-                  'Calculate Dose',
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline2
-                      .copyWith(color: Colors.white),
-                )),
           ),
         ],
       ),
@@ -246,17 +255,57 @@ class _AddBilanState extends State<AddBilan> {
   }
 
   _calculateDose() {
-    setState(() {
-      _dose = '10';
-    });
+    if (_drug == null || _patient == null) {
+      return;
+    } else if (_drug.name.toLowerCase() == 'capecitabine') {
+      if (isDouble(crController.text.trim()) &&
+          isDouble(brController.text.trim()) &&
+          isDouble(tgoTgpController.text.trim())) {
+        double cr = double.parse(crController.text.trim());
+        double br = double.parse(crController.text.trim());
+        double tgoTgp = double.parse(crController.text.trim());
+
+        setState(() {
+          if (br >= 60 || tgoTgp >= 55 || cr <= 30) {
+            _dose = 'contre-indiquée';
+          } else if (cr > 30 && cr < 50) {
+            _dose = '25%';
+          } else {
+            _dose = '100%';
+          }
+        });
+      } else if (isDouble(crController.text.trim()) &&
+          brController.text.isEmpty &&
+          tgoTgpController.text.isEmpty) {
+        double cr = double.parse(crController.text.trim());
+        setState(() {
+          if (cr >= 60) {
+            _dose = '100%';
+          } else if (cr <= 30) {
+            _dose = 'contre-indiquée';
+          } else {
+            _dose = '50%';
+          }
+        });
+      } else {
+        setState(() {
+          _dose = '/';
+        });
+      }
+    } else if (_drug.name.toLowerCase() == 'acide zolidronique') {}
   }
 
-  // Widget _myRadioButton({String title, int value, Function onChanged}) {
-  //   return RadioListTile(
-  //     value: value,
-  //     groupValue: _groupValue,
-  //     onChanged: onChanged,
-  //     title: Text(title),
-  //   );
-  // }
+  //To test if string is a number
+  bool isDouble(String string) {
+    if (string == null || string.isEmpty) {
+      return false;
+    }
+    final number = double.tryParse(string);
+
+    if (number == null) {
+      return false;
+    }
+
+    return true;
+  }
 }

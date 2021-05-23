@@ -23,17 +23,16 @@ class DatabaseHelper {
           .execute(createDrugTable)
           .then((value) => print('Drugs table created!'))
           .catchError((onError) => print(onError));
-      ;
+
       await db
           .execute(createPatientTable)
           .then((value) => print('Patient table created!'))
           .catchError((onError) => print(onError));
-      ;
+
       await db
           .execute(createBilanTable)
           .then((value) => print('Bilan table created!'))
           .catchError((onError) => print(onError));
-      ;
     });
   }
 
@@ -125,9 +124,11 @@ class DatabaseHelper {
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
-  static Future<List<Map<String, dynamic>>> selectBilan() async {
+  static Future<List<Map<String, dynamic>>> selectBilan(int doctorid) async {
     return await _db.query(
       "bilan",
+      where: 'doctor_id = ?',
+      whereArgs: [doctorid],
       distinct: true,
     );
   }
@@ -144,6 +145,14 @@ class DatabaseHelper {
 
   static Future<int> deleteBilan(int id) async {
     return await _db.delete("bilan", where: "bilan_id = ?", whereArgs: [id]);
+  }
+
+  //blain details
+  static Future<List<Map<String, dynamic>>> selectBilanDetails(
+      int bilanid) async {
+    return await _db.rawQuery(
+        '''SELECT p.patient_fullname, d.drug_name, b.bilan_dose, b.bilan_creationdate 
+            FROM patient p, drug d, bilan b WHERE b.bilan_id = $bilanid AND b.drug_id = d.drug_id AND b.patient_id = p.patient_id ''');
   }
 
   static String createDoctorTable = """
@@ -174,7 +183,9 @@ class DatabaseHelper {
   CREATE TABLE IF NOT EXISTS bilan(
     "bilan_id"	INTEGER PRIMARY KEY AUTOINCREMENT,
     "bilan_creationdate" TEXT,
-    "bilan_type" TEXT,
+    "bilan_cr" TEXT,
+    "bilan_br" TEXT,
+    "bilan_tgo_tgp" TEXT,
     "bilan_dose" TEXT,
     "drug_id" INTEGER,
     "patient_id" INTEGER,

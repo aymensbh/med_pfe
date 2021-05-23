@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:med/backend/database_helper.dart';
@@ -14,6 +15,7 @@ class DoctorsPage extends StatefulWidget {
 
 class _DoctorsPageState extends State<DoctorsPage> {
   List<Doctor> _doctorList = [];
+  List<Doctor> _duplicatedSearchItems = [];
 
   @override
   void initState() {
@@ -22,6 +24,7 @@ class _DoctorsPageState extends State<DoctorsPage> {
       List.generate(value.length, (index) {
         setState(() {
           _doctorList.add(Doctor.fromMap(value[index]));
+          _duplicatedSearchItems.add(Doctor.fromMap(value[index]));
         });
       });
     }).catchError((onError) => print(onError));
@@ -31,7 +34,34 @@ class _DoctorsPageState extends State<DoctorsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Select a Doctor'),
+        title: TextField(
+          onChanged: (input) {
+            filterSearchResults(input);
+          },
+          style: Theme.of(context)
+              .textTheme
+              .headline2
+              .copyWith(color: Colors.white),
+          textAlignVertical: TextAlignVertical.bottom,
+          cursorColor: Colors.white,
+          decoration: InputDecoration(
+              icon: Icon(
+                FontAwesomeIcons.search,
+                color: Colors.white,
+                size: 18,
+              ),
+              hintText: 'Select a Doctor',
+              hintStyle: Theme.of(context)
+                  .textTheme
+                  .headline2
+                  .copyWith(color: Colors.white),
+              focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(
+                      color: Theme.of(context).accentColor, width: 0)),
+              enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(
+                      color: Theme.of(context).accentColor, width: 1))),
+        ),
         actions: [
           IconButton(
               icon: Icon(
@@ -40,12 +70,22 @@ class _DoctorsPageState extends State<DoctorsPage> {
               ),
               onPressed: () {
                 Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => AddDoctor()))
+                    .push(CupertinoPageRoute(builder: (context) => AddDoctor()))
                     .then((value) {
                   if (value != null) {
                     setState(() {
                       _doctorList.add(value);
                     });
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        backgroundColor: Theme.of(context).accentColor,
+                        duration: Duration(seconds: 1),
+                        content: Text(
+                          'Added dr.${value.name}',
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline3
+                              .copyWith(color: Colors.white),
+                        )));
                   }
                 });
               }),
@@ -96,7 +136,7 @@ class _DoctorsPageState extends State<DoctorsPage> {
                         ),
                         onPressed: () {
                           Navigator.of(context)
-                              .push(MaterialPageRoute(
+                              .push(CupertinoPageRoute(
                                   builder: (context) => EditDoctor(
                                         doctor: _doctorList[index],
                                       )))
@@ -134,10 +174,11 @@ class _DoctorsPageState extends State<DoctorsPage> {
                         });
                       },
                       onTap: () {
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(
-                            builder: (context) => HomePage(
-                                  doctor: _doctorList[index],
-                                )));
+                        Navigator.of(context)
+                            .pushReplacement(CupertinoPageRoute(
+                                builder: (context) => HomePage(
+                                      doctor: _doctorList[index],
+                                    )));
                       },
                     ),
                   )),
@@ -183,5 +224,31 @@ class _DoctorsPageState extends State<DoctorsPage> {
             ],
           );
         });
+  }
+
+  filterSearchResults(String query) {
+    List<Doctor> dummySearchList = [];
+    dummySearchList.addAll(_doctorList);
+    if (query.isNotEmpty) {
+      List<Doctor> dummyListData = [];
+      dummySearchList.forEach((item) {
+        if (item.name
+            .toLowerCase()
+            .trim()
+            .contains(query.toLowerCase().trim())) {
+          dummyListData.add(item);
+        }
+      });
+      setState(() {
+        _doctorList.clear();
+        _doctorList.addAll(dummyListData);
+      });
+      return;
+    } else {
+      setState(() {
+        _doctorList.clear();
+        _doctorList.addAll(_duplicatedSearchItems);
+      });
+    }
   }
 }

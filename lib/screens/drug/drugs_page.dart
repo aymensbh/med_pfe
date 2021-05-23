@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:med/backend/database_helper.dart';
@@ -15,6 +16,7 @@ class DrugsPage extends StatefulWidget {
 
 class _DrugsPageState extends State<DrugsPage> {
   List<Drug> _drugsList = [];
+  List<Drug> _duplicatedSearchItems = [];
 
   @override
   void initState() {
@@ -23,6 +25,7 @@ class _DrugsPageState extends State<DrugsPage> {
       List.generate(value.length, (index) {
         setState(() {
           _drugsList.add(Drug.fromMap(value[index]));
+          _duplicatedSearchItems.add(Drug.fromMap(value[index]));
         });
       });
     });
@@ -32,7 +35,34 @@ class _DrugsPageState extends State<DrugsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Drugs'),
+        title: TextField(
+          onChanged: (input) {
+            filterSearchResults(input);
+          },
+          style: Theme.of(context)
+              .textTheme
+              .headline2
+              .copyWith(color: Colors.white),
+          textAlignVertical: TextAlignVertical.bottom,
+          cursorColor: Colors.white,
+          decoration: InputDecoration(
+              icon: Icon(
+                FontAwesomeIcons.search,
+                color: Colors.white,
+                size: 18,
+              ),
+              hintText: 'Drugs',
+              hintStyle: Theme.of(context)
+                  .textTheme
+                  .headline2
+                  .copyWith(color: Colors.white),
+              focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(
+                      color: Theme.of(context).accentColor, width: 0)),
+              enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(
+                      color: Theme.of(context).accentColor, width: 1))),
+        ),
         actions: [
           IconButton(
               icon: Icon(
@@ -41,12 +71,22 @@ class _DrugsPageState extends State<DrugsPage> {
               ),
               onPressed: () {
                 Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => AddDrug()))
+                    .push(CupertinoPageRoute(builder: (context) => AddDrug()))
                     .then((value) {
                   if (value != null) {
                     setState(() {
                       _drugsList.add(value);
                     });
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        backgroundColor: Theme.of(context).accentColor,
+                        duration: Duration(seconds: 1),
+                        content: Text(
+                          'Added ${value.name}',
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline3
+                              .copyWith(color: Colors.white),
+                        )));
                   }
                 });
               }),
@@ -123,7 +163,7 @@ class _DrugsPageState extends State<DrugsPage> {
                           onTap: () {
                             widget.selectMode == null
                                 ? Navigator.of(context)
-                                    .push(MaterialPageRoute(
+                                    .push(CupertinoPageRoute(
                                         builder: (context) => EditDrug(
                                               drug: _drugsList[index],
                                             )))
@@ -185,5 +225,31 @@ class _DrugsPageState extends State<DrugsPage> {
             ],
           );
         });
+  }
+
+  filterSearchResults(String query) {
+    List<Drug> dummySearchList = [];
+    dummySearchList.addAll(_drugsList);
+    if (query.isNotEmpty) {
+      List<Drug> dummyListData = [];
+      dummySearchList.forEach((item) {
+        if (item.name
+            .toLowerCase()
+            .trim()
+            .contains(query.toLowerCase().trim())) {
+          dummyListData.add(item);
+        }
+      });
+      setState(() {
+        _drugsList.clear();
+        _drugsList.addAll(dummyListData);
+      });
+      return;
+    } else {
+      setState(() {
+        _drugsList.clear();
+        _drugsList.addAll(_duplicatedSearchItems);
+      });
+    }
   }
 }
