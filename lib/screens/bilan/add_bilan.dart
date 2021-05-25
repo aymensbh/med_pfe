@@ -79,7 +79,7 @@ class _AddBilanState extends State<AddBilan> {
       onWillPop: _onWillPop,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Create new Bilan'),
+          title: Text('Créer un Bilan'),
           actions: [
             IconButton(
                 icon: Icon(
@@ -92,7 +92,7 @@ class _AddBilanState extends State<AddBilan> {
                         context: context,
                         builder: (context) => AlertDialog(
                               title: Text(
-                                'Please fill info correctly!',
+                                'Erreur de saisi!',
                                 style: Theme.of(context)
                                     .textTheme
                                     .headline2
@@ -105,7 +105,7 @@ class _AddBilanState extends State<AddBilan> {
                                       Navigator.of(context).pop();
                                     },
                                     child: Text(
-                                      'Ok',
+                                      'Retour',
                                       style: Theme.of(context)
                                           .textTheme
                                           .headline3

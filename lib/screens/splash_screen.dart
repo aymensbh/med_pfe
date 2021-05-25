@@ -11,6 +11,7 @@ class SplashScreen extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Material(
+            color: Colors.white,
             child: Center(
               child: CircularProgressIndicator(),
             ),
