@@ -10,15 +10,13 @@ class AddDoctor extends StatefulWidget {
 
 class _AddDoctorState extends State<AddDoctor> {
   GlobalKey<FormState> _formKey = GlobalKey();
-  String _name;
+  String _name, _spec;
   _validate() {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-      DatabaseHelper.insertDoctor(Doctor(
-        id: null,
-        name: _name,
-      )).then((value) {
-        Navigator.of(context).pop(Doctor(id: value, name: _name));
+      DatabaseHelper.insertDoctor(Doctor(id: null, name: _name, spec: _spec))
+          .then((value) {
+        Navigator.of(context).pop(Doctor(id: value, name: _name, spec: _spec));
       }).catchError((onError) => print(onError));
     }
   }
@@ -27,7 +25,7 @@ class _AddDoctorState extends State<AddDoctor> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add new Doctor'),
+        title: Text('Ajouter un Médecin'),
         actions: [
           IconButton(
               icon: Icon(
@@ -35,9 +33,6 @@ class _AddDoctorState extends State<AddDoctor> {
                 size: 18,
               ),
               onPressed: _validate),
-          // TextButton(
-          //     onPressed: () {},
-          //     child: Text('Save', style: TextStyle(color: Colors.white))),
         ],
       ),
       body: Form(
@@ -45,7 +40,7 @@ class _AddDoctorState extends State<AddDoctor> {
         child: ListView(
           children: [
             Card(
-              margin: EdgeInsets.all(12),
+              margin: EdgeInsets.fromLTRB(12, 12, 12, 0),
               child: TextFormField(
                 autofocus: true,
                 style: Theme.of(context)
@@ -53,8 +48,8 @@ class _AddDoctorState extends State<AddDoctor> {
                     .headline2
                     .copyWith(color: Colors.black),
                 validator: (input) {
-                  if (input.trim().isEmpty) {
-                    return 'value is empty';
+                  if (input.trim().length < 4) {
+                    return 'Fournir un nom complet!';
                   }
                 },
                 onSaved: (input) {
@@ -62,7 +57,25 @@ class _AddDoctorState extends State<AddDoctor> {
                 },
                 decoration: InputDecoration(
                     contentPadding: EdgeInsets.all(18),
-                    hintText: 'Full Name',
+                    hintText: 'Nom complet',
+                    enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey, width: .2))),
+              ),
+            ),
+            Card(
+              margin: EdgeInsets.fromLTRB(12, 12, 12, 0),
+              child: TextFormField(
+                autofocus: true,
+                style: Theme.of(context)
+                    .textTheme
+                    .headline2
+                    .copyWith(color: Colors.black),
+                onSaved: (input) {
+                  _spec = input.trim();
+                },
+                decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(18),
+                    hintText: 'Spécialité',
                     enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: Colors.grey, width: .2))),
               ),

@@ -158,7 +158,8 @@ class DatabaseHelper {
   static String createDoctorTable = """
   CREATE TABLE IF NOT EXISTS doctor(
     "doctor_id"	INTEGER PRIMARY KEY AUTOINCREMENT,
-    "doctor_name"	TEXT
+    "doctor_name"	TEXT,
+    "doctor_spec"	TEXT
     );
   """;
 
@@ -166,7 +167,7 @@ class DatabaseHelper {
   CREATE TABLE IF NOT EXISTS patient(
     "patient_id"	INTEGER PRIMARY KEY AUTOINCREMENT,
     "patient_fullname"	TEXT,
-    "patient_birthdate"	TEXT,
+    "patient_age"	TEXT,
     "patient_address" TEXT,
     "patient_phone" TEXT
   );
@@ -175,7 +176,8 @@ class DatabaseHelper {
   static String createDrugTable = """ 
   CREATE TABLE IF NOT EXISTS drug(
     "drug_id"	INTEGER PRIMARY KEY AUTOINCREMENT,
-    "drug_name"	TEXT
+    "drug_name"	TEXT,
+    "drug_lab"	TEXT
     );
   """;
 

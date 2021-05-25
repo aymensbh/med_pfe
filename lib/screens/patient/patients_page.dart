@@ -83,7 +83,7 @@ class _PatientsPageState extends State<PatientsPage> {
                         backgroundColor: Theme.of(context).accentColor,
                         duration: Duration(seconds: 1),
                         content: Text(
-                          'Added ${value.fullname}',
+                          'Patient créé ${value.fullname}',
                           style: Theme.of(context)
                               .textTheme
                               .headline3
@@ -110,14 +110,14 @@ class _PatientsPageState extends State<PatientsPage> {
                   height: 18,
                 ),
                 Text(
-                  'No Patients Added!',
+                  'Aucun Patient ajouté!',
                   style: Theme.of(context)
                       .textTheme
                       .headline1
                       .copyWith(color: Colors.black),
                 ),
                 Text(
-                  'Tap + to add',
+                  '+ Pour ajouter',
                   style: Theme.of(context).textTheme.headline2,
                 )
               ],
@@ -189,7 +189,7 @@ class _PatientsPageState extends State<PatientsPage> {
           return AlertDialog(
             elevation: 1,
             title: Text(
-              'Delete patient?',
+              'Supprimer?',
               style: Theme.of(context)
                   .textTheme
                   .headline2
@@ -201,7 +201,7 @@ class _PatientsPageState extends State<PatientsPage> {
                     Navigator.of(context).pop(false);
                   },
                   child: Text(
-                    'Cancel',
+                    'Annuler',
                     style: Theme.of(context)
                         .textTheme
                         .headline3
@@ -212,7 +212,7 @@ class _PatientsPageState extends State<PatientsPage> {
                     Navigator.of(context).pop(true);
                   },
                   child: Text(
-                    'Delete',
+                    'Supprimer',
                     style: Theme.of(context)
                         .textTheme
                         .headline3

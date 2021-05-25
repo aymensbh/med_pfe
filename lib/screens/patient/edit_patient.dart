@@ -13,9 +13,9 @@ class EditPatient extends StatefulWidget {
 
 class _EditPatientState extends State<EditPatient> {
   GlobalKey<FormState> _formKey = GlobalKey();
-  String _fullName, _birthdate, _address, _phone;
+  String _fullName, _age, _address, _phone;
   TextEditingController _fullNameController,
-      _birthdateController,
+      _ageController,
       _addressController,
       _phoneController;
 
@@ -23,8 +23,7 @@ class _EditPatientState extends State<EditPatient> {
   void initState() {
     _fullNameController =
         new TextEditingController(text: widget.patient.fullname);
-    _birthdateController =
-        new TextEditingController(text: widget.patient.birthdate);
+    _ageController = new TextEditingController(text: widget.patient.age);
     _addressController =
         new TextEditingController(text: widget.patient.address);
     _phoneController = new TextEditingController(text: widget.patient.phone);
@@ -39,14 +38,14 @@ class _EditPatientState extends State<EditPatient> {
         id: widget.patient.id,
         fullname: _fullName,
         address: _address,
-        birthdate: _birthdate,
+        age: _age,
         phone: _phone,
       )).then((value) {
         Navigator.of(context).pop(Patient(
           id: value,
           fullname: _fullName,
           address: _address,
-          birthdate: _birthdate,
+          age: _age,
           phone: _phone,
         ));
       }).catchError((onError) => print(onError));
@@ -57,7 +56,7 @@ class _EditPatientState extends State<EditPatient> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Patients'),
+        title: Text('Modifier un Patient'),
         actions: [
           IconButton(
               icon: Icon(
@@ -82,7 +81,7 @@ class _EditPatientState extends State<EditPatient> {
                 controller: _fullNameController,
                 validator: (input) {
                   if (input.trim().isEmpty) {
-                    return 'value is empty';
+                    return 'Fournir un nom complet';
                   }
                 },
                 onSaved: (input) {
@@ -90,7 +89,7 @@ class _EditPatientState extends State<EditPatient> {
                 },
                 decoration: InputDecoration(
                     contentPadding: EdgeInsets.all(18),
-                    hintText: 'Full Name',
+                    hintText: 'Nom complet',
                     enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: Colors.grey, width: .2))),
               ),
@@ -102,18 +101,18 @@ class _EditPatientState extends State<EditPatient> {
                     .textTheme
                     .headline2
                     .copyWith(color: Colors.black),
-                controller: _birthdateController,
+                controller: _ageController,
                 validator: (input) {
                   if (input.trim().isEmpty) {
-                    return 'value is empty';
+                    return 'Fournir l\'age';
                   }
                 },
                 onSaved: (input) {
-                  _birthdate = input.trim();
+                  _age = input.trim();
                 },
                 decoration: InputDecoration(
                     contentPadding: EdgeInsets.all(18),
-                    hintText: 'Birthdate',
+                    hintText: 'Age',
                     enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: Colors.grey, width: .2))),
               ),
@@ -126,17 +125,12 @@ class _EditPatientState extends State<EditPatient> {
                     .headline2
                     .copyWith(color: Colors.black),
                 controller: _addressController,
-                validator: (input) {
-                  if (input.trim().isEmpty) {
-                    return 'value is empty';
-                  }
-                },
                 onSaved: (input) {
                   _address = input.trim();
                 },
                 decoration: InputDecoration(
                     contentPadding: EdgeInsets.all(18),
-                    hintText: 'Address',
+                    hintText: 'Adresse',
                     enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: Colors.grey, width: .2))),
               ),
@@ -149,11 +143,6 @@ class _EditPatientState extends State<EditPatient> {
                     .headline2
                     .copyWith(color: Colors.black),
                 controller: _phoneController,
-                validator: (input) {
-                  if (input.trim().isEmpty) {
-                    return 'value is empty';
-                  }
-                },
                 onSaved: (input) {
                   _phone = input.trim();
                 },

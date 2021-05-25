@@ -74,7 +74,7 @@ class _ViewBilanState extends State<ViewBilan> {
                     child: ListTile(
                       contentPadding: EdgeInsets.fromLTRB(18, 8, 18, 8),
                       title: Text(
-                        'Drug',
+                        'Médicament',
                         style: Theme.of(context).textTheme.headline3,
                       ),
                       trailing: Text(
@@ -90,7 +90,7 @@ class _ViewBilanState extends State<ViewBilan> {
                     child: ListTile(
                       contentPadding: EdgeInsets.fromLTRB(18, 8, 18, 8),
                       title: Text(
-                        'Bilan dose',
+                        'Dose administé',
                         style: Theme.of(context).textTheme.headline3,
                       ),
                       trailing: Text(

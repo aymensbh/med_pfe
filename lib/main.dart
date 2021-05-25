@@ -6,8 +6,6 @@ main(List<String> args) {
   runApp(MaterialApp(
     theme: themeData,
     debugShowCheckedModeBanner: false,
-    routes: {
-      '/': (context) => SplashScreen(),
-    },
+    home: SplashScreen(),
   ));
 }

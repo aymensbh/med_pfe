@@ -51,7 +51,7 @@ class _DrugsPageState extends State<DrugsPage> {
                 color: Colors.white,
                 size: 18,
               ),
-              hintText: 'Drugs',
+              hintText: 'Médicaments',
               hintStyle: Theme.of(context)
                   .textTheme
                   .headline2
@@ -108,14 +108,14 @@ class _DrugsPageState extends State<DrugsPage> {
                   height: 18,
                 ),
                 Text(
-                  'No Drugs Added!',
+                  'Aucun Médicaments ajouté',
                   style: Theme.of(context)
                       .textTheme
                       .headline1
                       .copyWith(color: Colors.black),
                 ),
                 Text(
-                  'Tap + to add',
+                  '+ pour ajouter',
                   style: Theme.of(context).textTheme.headline2,
                 )
               ],
@@ -135,6 +135,10 @@ class _DrugsPageState extends State<DrugsPage> {
                                 .headline2
                                 .copyWith(color: Colors.black),
                           ),
+                          subtitle: _drugsList[index].lab.isNotEmpty
+                              ? Text(_drugsList[index].lab,
+                                  style: Theme.of(context).textTheme.headline3)
+                              : null,
                           trailing: Icon(
                             widget.selectMode == null
                                 ? FontAwesomeIcons.penAlt
@@ -193,7 +197,7 @@ class _DrugsPageState extends State<DrugsPage> {
           return AlertDialog(
             elevation: 1,
             title: Text(
-              'Delete drug?',
+              'Supprimer?',
               style: Theme.of(context)
                   .textTheme
                   .headline2
@@ -205,7 +209,7 @@ class _DrugsPageState extends State<DrugsPage> {
                     Navigator.of(context).pop(false);
                   },
                   child: Text(
-                    'Cancel',
+                    'Annuler',
                     style: Theme.of(context)
                         .textTheme
                         .headline3
@@ -216,7 +220,7 @@ class _DrugsPageState extends State<DrugsPage> {
                     Navigator.of(context).pop(true);
                   },
                   child: Text(
-                    'Delete',
+                    'Supprimer',
                     style: Theme.of(context)
                         .textTheme
                         .headline3
@@ -234,9 +238,13 @@ class _DrugsPageState extends State<DrugsPage> {
       List<Drug> dummyListData = [];
       dummySearchList.forEach((item) {
         if (item.name
-            .toLowerCase()
-            .trim()
-            .contains(query.toLowerCase().trim())) {
+                .toLowerCase()
+                .trim()
+                .contains(query.toLowerCase().trim()) ||
+            item.lab
+                .toLowerCase()
+                .trim()
+                .contains(query.toLowerCase().trim())) {
           dummyListData.add(item);
         }
       });

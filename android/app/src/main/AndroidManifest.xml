@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="io.med">
    <application
-        android:label="med"
+        android:label="Easy Bilan"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

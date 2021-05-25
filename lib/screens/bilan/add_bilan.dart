@@ -24,232 +24,290 @@ class _AddBilanState extends State<AddBilan> {
       brController = TextEditingController(),
       tgoTgpController = TextEditingController();
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Create new Bilan'),
-        actions: [
-          IconButton(
-              icon: Icon(
-                FontAwesomeIcons.check,
-                size: 18,
-              ),
-              onPressed: () {
-                if (_patient == null || _drug == null) {
-                  showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                            title: Text(
-                              'Please fill info correctly!',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline2
-                                  .copyWith(color: Colors.black),
-                            ),
-                            elevation: 1,
-                            actions: [
-                              TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Text(
-                                    'Ok',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline3
-                                        .copyWith(color: Colors.black),
-                                  ))
-                            ],
-                          ));
-                } else {
-                  DatabaseHelper.insertBilan(Bilan(
-                    id: null,
-                    creationdate:
-                        DateFormat('yyyy-MM-dd – kk:mm').format(DateTime.now()),
-                    doctorid: widget.doctorid,
-                    dose: _dose,
-                    drugid: _drug.id,
-                    patientid: _patient.id,
-                    br: brController.text.trim().isEmpty
-                        ? '/'
-                        : brController.text.trim(),
-                    cr: crController.text.trim().isEmpty
-                        ? '/'
-                        : crController.text.trim(),
-                    tgoTgp: tgoTgpController.text.trim().isEmpty
-                        ? '/'
-                        : tgoTgpController.text.trim(),
-                  )).then((value) {
-                    Navigator.of(context).pop();
-                  });
-                }
-              }),
-        ],
-      ),
-      body: ListView(
-        children: [
-          Card(
-            margin: EdgeInsets.fromLTRB(12, 12, 12, 0),
-            child: ListTile(
-              contentPadding: EdgeInsets.fromLTRB(18, 2, 18, 2),
-              title: Text(
-                  _patient == null ? 'Select a Patient' : _patient.fullname,
-                  style: Theme.of(context).textTheme.headline2.copyWith(
-                      color: _patient == null ? Colors.grey : Colors.black)),
-              trailing: Icon(
-                _patient == null
-                    ? FontAwesomeIcons.plus
-                    : FontAwesomeIcons.check,
-                color: _patient == null ? Colors.grey : Colors.teal,
-                size: 18,
-              ),
-              onTap: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(
-                        builder: (context) => PatientsPage(
-                              selectMode: true,
-                            )))
-                    .then((value) {
-                  if (value != null) {
-                    setState(() {
-                      _patient = value;
-                    });
-                  }
-                });
-              },
-            ),
-          ),
-          Card(
-            margin: EdgeInsets.fromLTRB(12, 12, 12, 0),
-            child: ListTile(
-              contentPadding: EdgeInsets.fromLTRB(18, 2, 18, 2),
-              title: Text(_drug == null ? 'Select a Drug' : _drug.name,
-                  style: Theme.of(context).textTheme.headline2.copyWith(
-                      color: _drug == null ? Colors.grey : Colors.black)),
-              trailing: Icon(
-                _drug == null ? FontAwesomeIcons.plus : FontAwesomeIcons.check,
-                color: _drug == null ? Colors.grey : Colors.teal,
-                size: 18,
-              ),
-              onTap: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(
-                        builder: (context) => DrugsPage(
-                              selectMode: true,
-                            )))
-                    .then((value) {
-                  if (value != null) {
-                    setState(() {
-                      _drug = value;
-                    });
-                  }
-                });
-              },
-            ),
-          ),
-          Card(
-              margin: EdgeInsets.fromLTRB(12, 12, 12, 0),
-              child: ExpansionTile(
+  Future<bool> _onWillPop() {
+    if (_patient != null || _drug != null) {
+      showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+                elevation: 1,
                 title: Text(
-                  'Demanded Bilans',
+                  'Voulez-vous quitter?',
                   style: Theme.of(context)
                       .textTheme
                       .headline2
                       .copyWith(color: Colors.black),
                 ),
-                children: <Widget>[
-                  TextField(
-                    onChanged: (value) {
-                      _calculateDose();
-                    },
-                    controller: crController,
-                    keyboardType: TextInputType.number,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline2
-                        .copyWith(color: Colors.black),
-                    decoration: InputDecoration(
-                        suffix: Text(
-                          'ml/min',
-                        ),
-                        contentPadding: EdgeInsets.all(18),
-                        hintText: 'Cr',
-                        focusedBorder: UnderlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.white, width: 1)),
-                        enabledBorder: UnderlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.white, width: 1))),
-                  ),
-                  TextField(
-                    onChanged: (value) {
-                      _calculateDose();
-                    },
-                    controller: brController,
-                    keyboardType: TextInputType.number,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline2
-                        .copyWith(color: Colors.black),
-                    decoration: InputDecoration(
-                        suffix: Text(
-                          'ml/min',
-                        ),
-                        contentPadding: EdgeInsets.all(18),
-                        hintText: 'Br',
-                        focusedBorder: UnderlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.white, width: 1)),
-                        enabledBorder: UnderlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.white, width: 1))),
-                  ),
-                  TextField(
-                    onChanged: (value) {
-                      _calculateDose();
-                    },
-                    controller: tgoTgpController,
-                    keyboardType: TextInputType.number,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline2
-                        .copyWith(color: Colors.black),
-                    decoration: InputDecoration(
-                        suffix: Text(
-                          'ml/min',
-                        ),
-                        contentPadding: EdgeInsets.all(18),
-                        hintText: 'Tgo/Tgp',
-                        focusedBorder: UnderlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.white, width: 1)),
-                        enabledBorder: UnderlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.white, width: 1))),
-                  ),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(false);
+                      },
+                      child: Text(
+                        'Annuler',
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline3
+                            .copyWith(color: Colors.black),
+                      )),
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(true);
+                      },
+                      child: Text(
+                        'Quitter',
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline3
+                            .copyWith(color: Colors.red),
+                      )),
                 ],
-              )),
-          Card(
-            margin: EdgeInsets.fromLTRB(12, 12, 12, 0),
-            child: ListTile(
-              leading: Text(
-                'Dose',
-                style: Theme.of(context)
-                    .textTheme
-                    .headline2
-                    .copyWith(color: Colors.black),
-              ),
-              trailing: Text(
-                '$_dose',
-                style: Theme.of(context)
-                    .textTheme
-                    .headline1
-                    .copyWith(color: Colors.black),
+              )).then((value) {
+        if (value != null) {
+          if (value) {
+            Navigator.of(context).pop();
+          }
+        }
+      });
+    } else {
+      Navigator.of(context).pop();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Create new Bilan'),
+          actions: [
+            IconButton(
+                icon: Icon(
+                  FontAwesomeIcons.check,
+                  size: 18,
+                ),
+                onPressed: () {
+                  if (_patient == null || _drug == null) {
+                    showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                              title: Text(
+                                'Please fill info correctly!',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline2
+                                    .copyWith(color: Colors.black),
+                              ),
+                              elevation: 1,
+                              actions: [
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text(
+                                      'Ok',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headline3
+                                          .copyWith(color: Colors.black),
+                                    ))
+                              ],
+                            ));
+                  } else {
+                    DatabaseHelper.insertBilan(Bilan(
+                      id: null,
+                      creationdate: DateFormat('yyyy-MM-dd – kk:mm')
+                          .format(DateTime.now()),
+                      doctorid: widget.doctorid,
+                      dose: _dose,
+                      drugid: _drug.id,
+                      patientid: _patient.id,
+                      br: brController.text.trim().isEmpty
+                          ? '/'
+                          : brController.text.trim(),
+                      cr: crController.text.trim().isEmpty
+                          ? '/'
+                          : crController.text.trim(),
+                      tgoTgp: tgoTgpController.text.trim().isEmpty
+                          ? '/'
+                          : tgoTgpController.text.trim(),
+                    )).then((value) {
+                      Navigator.of(context).pop();
+                    });
+                  }
+                }),
+          ],
+        ),
+        body: ListView(
+          children: [
+            Card(
+              margin: EdgeInsets.fromLTRB(12, 12, 12, 0),
+              child: ListTile(
+                contentPadding: EdgeInsets.fromLTRB(18, 2, 18, 2),
+                title: Text(
+                    _patient == null
+                        ? 'Sélectionner un patient'
+                        : _patient.fullname,
+                    style: Theme.of(context).textTheme.headline2.copyWith(
+                        color: _patient == null ? Colors.grey : Colors.black)),
+                trailing: Icon(
+                  _patient == null
+                      ? FontAwesomeIcons.plus
+                      : FontAwesomeIcons.check,
+                  color: _patient == null ? Colors.grey : Colors.teal,
+                  size: 14,
+                ),
+                onTap: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(
+                          builder: (context) => PatientsPage(
+                                selectMode: true,
+                              )))
+                      .then((value) {
+                    if (value != null) {
+                      setState(() {
+                        _patient = value;
+                      });
+                    }
+                  });
+                },
               ),
             ),
-          ),
-        ],
+            Card(
+              margin: EdgeInsets.fromLTRB(12, 12, 12, 0),
+              child: ListTile(
+                contentPadding: EdgeInsets.fromLTRB(18, 2, 18, 2),
+                title: Text(
+                    _drug == null ? 'Sélectionnez un Médicament' : _drug.name,
+                    style: Theme.of(context).textTheme.headline2.copyWith(
+                        color: _drug == null ? Colors.grey : Colors.black)),
+                trailing: Icon(
+                  _drug == null
+                      ? FontAwesomeIcons.plus
+                      : FontAwesomeIcons.check,
+                  color: _drug == null ? Colors.grey : Colors.teal,
+                  size: 14,
+                ),
+                onTap: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(
+                          builder: (context) => DrugsPage(
+                                selectMode: true,
+                              )))
+                      .then((value) {
+                    if (value != null) {
+                      setState(() {
+                        _drug = value;
+                      });
+                    }
+                  });
+                },
+              ),
+            ),
+            Card(
+                margin: EdgeInsets.fromLTRB(12, 12, 12, 0),
+                child: ExpansionTile(
+                  title: Text(
+                    'Bilans exigé',
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline2
+                        .copyWith(color: Colors.black),
+                  ),
+                  children: <Widget>[
+                    TextField(
+                      onChanged: (value) {
+                        _calculateDose();
+                      },
+                      controller: crController,
+                      keyboardType: TextInputType.number,
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline2
+                          .copyWith(color: Colors.black),
+                      decoration: InputDecoration(
+                          suffix: Text(
+                            'ml/min',
+                          ),
+                          contentPadding: EdgeInsets.all(18),
+                          hintText: 'Cr',
+                          focusedBorder: UnderlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.white, width: 1)),
+                          enabledBorder: UnderlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.white, width: 1))),
+                    ),
+                    TextField(
+                      onChanged: (value) {
+                        _calculateDose();
+                      },
+                      controller: brController,
+                      keyboardType: TextInputType.number,
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline2
+                          .copyWith(color: Colors.black),
+                      decoration: InputDecoration(
+                          suffix: Text(
+                            'ml/min',
+                          ),
+                          contentPadding: EdgeInsets.all(18),
+                          hintText: 'Br',
+                          focusedBorder: UnderlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.white, width: 1)),
+                          enabledBorder: UnderlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.white, width: 1))),
+                    ),
+                    TextField(
+                      onChanged: (value) {
+                        _calculateDose();
+                      },
+                      controller: tgoTgpController,
+                      keyboardType: TextInputType.number,
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline2
+                          .copyWith(color: Colors.black),
+                      decoration: InputDecoration(
+                          suffix: Text(
+                            'ml/min',
+                          ),
+                          contentPadding: EdgeInsets.all(18),
+                          hintText: 'Tgo/Tgp',
+                          focusedBorder: UnderlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.white, width: 1)),
+                          enabledBorder: UnderlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.white, width: 1))),
+                    ),
+                  ],
+                )),
+            Card(
+              margin: EdgeInsets.fromLTRB(12, 12, 12, 0),
+              color: Theme.of(context).accentColor,
+              child: ListTile(
+                leading: Text(
+                  'Dose administé',
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline2
+                      .copyWith(color: Colors.white),
+                ),
+                trailing: Text(
+                  '$_dose',
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline1
+                      .copyWith(color: Colors.white),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

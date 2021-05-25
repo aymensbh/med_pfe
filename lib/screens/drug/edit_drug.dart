@@ -15,26 +15,24 @@ class _EditDrugState extends State<EditDrug> {
   GlobalKey<FormState> _formKey = GlobalKey();
   String _name;
   TextEditingController _nameController;
+  String _lab;
+  TextEditingController _labController;
 
   @override
   void initState() {
     _nameController = new TextEditingController(text: widget.drug.name);
+    _labController = new TextEditingController(text: widget.drug.lab);
     super.initState();
   }
 
   _validate() {
-    //TODO: Edit This
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-      DatabaseHelper.updateDrug(Drug(
-        id: widget.drug.id,
-        name: _name,
-      )).then((value) {
-        Navigator.of(context).pop(Drug(
-          id: value,
-          name: _name,
-        ));
-      }).catchError((onError) => print(onError));
+      DatabaseHelper.updateDrug(
+              Drug(id: widget.drug.id, name: _name, lab: _lab))
+          .then((value) {
+        Navigator.of(context).pop(Drug(id: value, name: _name, lab: _lab));
+      });
     }
   }
 
@@ -42,7 +40,7 @@ class _EditDrugState extends State<EditDrug> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Drugs'),
+        title: Text('Modifier un Médicament'),
         actions: [
           IconButton(
               icon: Icon(
@@ -67,7 +65,7 @@ class _EditDrugState extends State<EditDrug> {
                 controller: _nameController,
                 validator: (input) {
                   if (input.trim().isEmpty) {
-                    return 'value is empty';
+                    return 'Fournir un médicament';
                   }
                 },
                 onSaved: (input) {
@@ -75,7 +73,26 @@ class _EditDrugState extends State<EditDrug> {
                 },
                 decoration: InputDecoration(
                     contentPadding: EdgeInsets.all(18),
-                    hintText: 'drug Name',
+                    hintText: 'Médicament',
+                    enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey, width: .2))),
+              ),
+            ),
+            Card(
+              margin: EdgeInsets.fromLTRB(12, 12, 12, 0),
+              child: TextFormField(
+                autofocus: true,
+                style: Theme.of(context)
+                    .textTheme
+                    .headline2
+                    .copyWith(color: Colors.black),
+                controller: _labController,
+                onSaved: (input) {
+                  _lab = input.trim();
+                },
+                decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(18),
+                    hintText: 'Laboratoire',
                     enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: Colors.grey, width: .2))),
               ),

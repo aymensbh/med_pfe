@@ -9,7 +9,7 @@ class AddPatient extends StatefulWidget {
 
 class _AddPatientState extends State<AddPatient> {
   GlobalKey<FormState> _formKey = GlobalKey();
-  String _fullName, _birthdate, _address, _phone;
+  String _fullName, _age, _address, _phone;
   _validate() {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
@@ -17,14 +17,14 @@ class _AddPatientState extends State<AddPatient> {
         id: null,
         fullname: _fullName,
         address: _address,
-        birthdate: _birthdate,
+        age: _age,
         phone: _phone,
       )).then((value) {
         Navigator.of(context).pop(Patient(
           id: value,
           fullname: _fullName,
           address: _address,
-          birthdate: _birthdate,
+          age: _age,
           phone: _phone,
         ));
       }).catchError((onError) => print(onError));
@@ -57,7 +57,7 @@ class _AddPatientState extends State<AddPatient> {
                     .copyWith(color: Colors.black),
                 validator: (input) {
                   if (input.trim().isEmpty) {
-                    return 'value is empty';
+                    return 'Fournir un nom complet';
                   }
                 },
                 onSaved: (input) {
@@ -65,7 +65,7 @@ class _AddPatientState extends State<AddPatient> {
                 },
                 decoration: InputDecoration(
                     contentPadding: EdgeInsets.all(18),
-                    hintText: 'Full Name',
+                    hintText: 'Nom Complet',
                     enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: Colors.grey, width: .2))),
               ),
@@ -79,15 +79,15 @@ class _AddPatientState extends State<AddPatient> {
                     .copyWith(color: Colors.black),
                 validator: (input) {
                   if (input.trim().isEmpty) {
-                    return 'value is empty';
+                    return 'Fournir l\'age';
                   }
                 },
                 onSaved: (input) {
-                  _birthdate = input.trim();
+                  _age = input.trim();
                 },
                 decoration: InputDecoration(
                     contentPadding: EdgeInsets.all(18),
-                    hintText: 'Birthdate',
+                    hintText: 'Age',
                     enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: Colors.grey, width: .2))),
               ),
@@ -99,17 +99,12 @@ class _AddPatientState extends State<AddPatient> {
                     .textTheme
                     .headline2
                     .copyWith(color: Colors.black),
-                validator: (input) {
-                  if (input.trim().isEmpty) {
-                    return 'value is empty';
-                  }
-                },
                 onSaved: (input) {
                   _address = input.trim();
                 },
                 decoration: InputDecoration(
                     contentPadding: EdgeInsets.all(18),
-                    hintText: 'Address',
+                    hintText: 'Adresse',
                     enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: Colors.grey, width: .2))),
               ),
@@ -121,11 +116,6 @@ class _AddPatientState extends State<AddPatient> {
                     .textTheme
                     .headline2
                     .copyWith(color: Colors.black),
-                validator: (input) {
-                  if (input.trim().isEmpty) {
-                    return 'value is empty';
-                  }
-                },
                 onSaved: (input) {
                   _phone = input.trim();
                 },

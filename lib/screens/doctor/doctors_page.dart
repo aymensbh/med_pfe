@@ -50,7 +50,7 @@ class _DoctorsPageState extends State<DoctorsPage> {
                 color: Colors.white,
                 size: 18,
               ),
-              hintText: 'Select a Doctor',
+              hintText: 'Sélectionner un Médecin',
               hintStyle: Theme.of(context)
                   .textTheme
                   .headline2
@@ -104,14 +104,14 @@ class _DoctorsPageState extends State<DoctorsPage> {
                   height: 18,
                 ),
                 Text(
-                  'No Doctors Added!',
+                  'Aucun Médecin ajouté',
                   style: Theme.of(context)
                       .textTheme
                       .headline1
                       .copyWith(color: Colors.black),
                 ),
                 Text(
-                  'Tap + to add',
+                  '+ pour ajouter',
                   style: Theme.of(context).textTheme.headline2,
                 )
               ],
@@ -123,12 +123,16 @@ class _DoctorsPageState extends State<DoctorsPage> {
                     child: ListTile(
                       contentPadding: EdgeInsets.fromLTRB(18, 8, 8, 8),
                       title: Text(
-                        'dr.' + _doctorList[index].name,
+                        'Dr. ' + _doctorList[index].name,
                         style: Theme.of(context)
                             .textTheme
                             .headline2
                             .copyWith(color: Colors.black),
                       ),
+                      subtitle: _doctorList[index].spec.isNotEmpty
+                          ? Text(_doctorList[index].spec,
+                              style: Theme.of(context).textTheme.headline3)
+                          : null,
                       trailing: IconButton(
                         icon: Icon(
                           FontAwesomeIcons.penAlt,
@@ -192,7 +196,7 @@ class _DoctorsPageState extends State<DoctorsPage> {
           return AlertDialog(
             elevation: 1,
             title: Text(
-              'Delete doctor?',
+              'Supprimer?',
               style: Theme.of(context)
                   .textTheme
                   .headline2
@@ -204,7 +208,7 @@ class _DoctorsPageState extends State<DoctorsPage> {
                     Navigator.of(context).pop(false);
                   },
                   child: Text(
-                    'Cancel',
+                    'Annuler',
                     style: Theme.of(context)
                         .textTheme
                         .headline3
@@ -215,7 +219,7 @@ class _DoctorsPageState extends State<DoctorsPage> {
                     Navigator.of(context).pop(true);
                   },
                   child: Text(
-                    'Delete',
+                    'Supprimer',
                     style: Theme.of(context)
                         .textTheme
                         .headline3
@@ -233,9 +237,13 @@ class _DoctorsPageState extends State<DoctorsPage> {
       List<Doctor> dummyListData = [];
       dummySearchList.forEach((item) {
         if (item.name
-            .toLowerCase()
-            .trim()
-            .contains(query.toLowerCase().trim())) {
+                .toLowerCase()
+                .trim()
+                .contains(query.toLowerCase().trim()) ||
+            item.spec
+                .toLowerCase()
+                .trim()
+                .contains(query.toLowerCase().trim())) {
           dummyListData.add(item);
         }
       });

@@ -20,6 +20,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -36,7 +41,7 @@ class _HomePageState extends State<HomePage> {
         },
       ),
       appBar: AppBar(
-        title: Text('Hello! dr. ${widget.doctor.name}'),
+        title: Text('Bienvenue, Dr. ${widget.doctor.name}'),
         actions: [
           IconButton(
               icon: Icon(FontAwesomeIcons.chevronDown, size: 18),
@@ -56,11 +61,11 @@ class _HomePageState extends State<HomePage> {
                               Navigator.of(context).pop(true);
                             },
                             leading: Text(
-                              'Sign-out',
+                              'Déconnexion',
                               style: Theme.of(context)
                                   .textTheme
                                   .headline2
-                                  .copyWith(color: Colors.black),
+                                  .copyWith(color: Colors.red),
                             ),
                             trailing: Icon(
                               FontAwesomeIcons.signOutAlt,
@@ -94,7 +99,7 @@ class _HomePageState extends State<HomePage> {
           ),
           CustomGridCard(
             imagePath: 'assets/images/drug.png',
-            title: 'Drugs',
+            title: 'Médicaments',
             onTap: () {
               Navigator.of(context)
                   .push(CupertinoPageRoute(builder: (context) => DrugsPage()));
@@ -102,7 +107,7 @@ class _HomePageState extends State<HomePage> {
           ),
           CustomGridCard(
             imagePath: 'assets/images/bilan.png',
-            title: 'Bilan history',
+            title: 'Bilan historique',
             onTap: () {
               Navigator.push(
                   context,

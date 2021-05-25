@@ -13,12 +13,13 @@ class EditDoctor extends StatefulWidget {
 
 class _EditDoctorState extends State<EditDoctor> {
   GlobalKey<FormState> _formKey = GlobalKey();
-  String _name;
-  TextEditingController _nameController;
+  String _name, _spec;
+  TextEditingController _nameController, _specController;
 
   @override
   void initState() {
     _nameController = new TextEditingController(text: widget.doctor.name);
+    _specController = new TextEditingController(text: widget.doctor.spec);
     super.initState();
   }
 
@@ -26,14 +27,10 @@ class _EditDoctorState extends State<EditDoctor> {
     //TODO: Edit This
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-      DatabaseHelper.updateDoctor(Doctor(
-        id: widget.doctor.id,
-        name: _name,
-      )).then((value) {
-        Navigator.of(context).pop(Doctor(
-          id: value,
-          name: _name,
-        ));
+      DatabaseHelper.updateDoctor(
+              Doctor(id: widget.doctor.id, name: _name, spec: _spec))
+          .then((value) {
+        Navigator.of(context).pop(Doctor(id: value, name: _name, spec: _spec));
       }).catchError((onError) => print(onError));
     }
   }
@@ -42,7 +39,7 @@ class _EditDoctorState extends State<EditDoctor> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Doctor'),
+        title: Text('Modifier un Médecin'),
         actions: [
           IconButton(
               icon: Icon(
@@ -57,7 +54,7 @@ class _EditDoctorState extends State<EditDoctor> {
         child: ListView(
           children: [
             Card(
-              margin: EdgeInsets.all(12),
+              margin: EdgeInsets.fromLTRB(12, 12, 12, 0),
               child: TextFormField(
                 autofocus: true,
                 style: Theme.of(context)
@@ -66,8 +63,8 @@ class _EditDoctorState extends State<EditDoctor> {
                     .copyWith(color: Colors.black),
                 controller: _nameController,
                 validator: (input) {
-                  if (input.trim().isEmpty) {
-                    return 'value is empty';
+                  if (input.trim().length < 4) {
+                    return 'Fournir un nom complet!';
                   }
                 },
                 onSaved: (input) {
@@ -75,7 +72,31 @@ class _EditDoctorState extends State<EditDoctor> {
                 },
                 decoration: InputDecoration(
                     contentPadding: EdgeInsets.all(18),
-                    hintText: 'Full Name',
+                    hintText: 'Nom et Prénom',
+                    enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey, width: .2))),
+              ),
+            ),
+            Card(
+              margin: EdgeInsets.fromLTRB(12, 12, 12, 0),
+              child: TextFormField(
+                autofocus: true,
+                style: Theme.of(context)
+                    .textTheme
+                    .headline2
+                    .copyWith(color: Colors.black),
+                controller: _specController,
+                // validator: (input) {
+                //   if (input.trim().isEmpty) {
+                //     return 'value is empty';
+                //   }
+                // },
+                onSaved: (input) {
+                  _spec = input.trim();
+                },
+                decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(18),
+                    hintText: 'Spécialité',
                     enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: Colors.grey, width: .2))),
               ),

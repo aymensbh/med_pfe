@@ -50,7 +50,7 @@ class _BilanPageState extends State<BilanPage> {
                 color: Colors.white,
                 size: 18,
               ),
-              hintText: 'Bilans History',
+              hintText: 'Bilans Historique',
               hintStyle: Theme.of(context)
                   .textTheme
                   .headline2
@@ -76,14 +76,14 @@ class _BilanPageState extends State<BilanPage> {
                   height: 18,
                 ),
                 Text(
-                  'No Bilan Added!',
+                  'Aucun Bilan ajouté',
                   style: Theme.of(context)
                       .textTheme
                       .headline1
                       .copyWith(color: Colors.black),
                 ),
                 Text(
-                  'Tap + to add',
+                  '+ Pour ajouter',
                   style: Theme.of(context).textTheme.headline2,
                 )
               ],
@@ -142,7 +142,7 @@ class _BilanPageState extends State<BilanPage> {
           return AlertDialog(
             elevation: 1,
             title: Text(
-              'Delete bilan?',
+              'Supprimer?',
               style: Theme.of(context)
                   .textTheme
                   .headline2
@@ -154,7 +154,7 @@ class _BilanPageState extends State<BilanPage> {
                     Navigator.of(context).pop(false);
                   },
                   child: Text(
-                    'Cancel',
+                    'Annuler',
                     style: Theme.of(context)
                         .textTheme
                         .headline3
@@ -165,7 +165,7 @@ class _BilanPageState extends State<BilanPage> {
                     Navigator.of(context).pop(true);
                   },
                   child: Text(
-                    'Delete',
+                    'Supprimer',
                     style: Theme.of(context)
                         .textTheme
                         .headline3
