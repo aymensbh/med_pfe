@@ -86,19 +86,23 @@ class _ViewBilanState extends State<ViewBilan> {
                       ),
                     )),
                 Card(
+                    color: Theme.of(context).accentColor,
                     margin: EdgeInsets.fromLTRB(12, 12, 12, 0),
                     child: ListTile(
                       contentPadding: EdgeInsets.fromLTRB(18, 8, 18, 8),
                       title: Text(
                         'Dose administé',
-                        style: Theme.of(context).textTheme.headline3,
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline3
+                            .copyWith(color: Colors.white),
                       ),
                       trailing: Text(
                         _bilanDetailsList[0].dose,
                         style: Theme.of(context)
                             .textTheme
                             .headline2
-                            .copyWith(color: Colors.black),
+                            .copyWith(color: Colors.white),
                       ),
                     )),
               ],

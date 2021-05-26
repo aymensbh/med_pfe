@@ -315,42 +315,44 @@ class _AddBilanState extends State<AddBilan> {
   _calculateDose() {
     if (_drug == null || _patient == null) {
       return;
-    } else if (_drug.name.toLowerCase() == 'capecitabine') {
+    }
+    setState(() {
       if (isDouble(crController.text.trim()) &&
           isDouble(brController.text.trim()) &&
           isDouble(tgoTgpController.text.trim())) {
         double cr = double.parse(crController.text.trim());
-        double br = double.parse(crController.text.trim());
-        double tgoTgp = double.parse(crController.text.trim());
-
-        setState(() {
-          if (br >= 60 || tgoTgp >= 55 || cr <= 30) {
-            _dose = 'contre-indiquée';
-          } else if (cr > 30 && cr < 50) {
-            _dose = '25%';
-          } else {
-            _dose = '100%';
-          }
-        });
+        double br = double.parse(brController.text.trim());
+        double tgoTgp = double.parse(tgoTgpController.text.trim());
+        if (br >= 60 || tgoTgp >= 55 || cr <= 30) {
+          _dose = 'contre-indiquée';
+          return;
+        } else if ((cr > 30 && cr < 50) || (tgoTgp > 30 && tgoTgp < 50)) {
+          print(br);
+          _dose = '25%';
+          return;
+        } else {
+          _dose = '100%';
+          return;
+        }
       } else if (isDouble(crController.text.trim()) &&
           brController.text.isEmpty &&
           tgoTgpController.text.isEmpty) {
         double cr = double.parse(crController.text.trim());
-        setState(() {
-          if (cr >= 60) {
-            _dose = '100%';
-          } else if (cr <= 30) {
-            _dose = 'contre-indiquée';
-          } else {
-            _dose = '50%';
-          }
-        });
+        if (cr >= 60) {
+          _dose = '100%';
+          return;
+        } else if (cr <= 30) {
+          _dose = 'contre-indiquée';
+          return;
+        } else {
+          _dose = '50%';
+          return;
+        }
       } else {
-        setState(() {
-          _dose = '/';
-        });
+        _dose = '/';
+        return;
       }
-    } else if (_drug.name.toLowerCase() == 'acide zolidronique') {}
+    });
   }
 
   //To test if string is a number
