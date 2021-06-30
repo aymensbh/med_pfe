@@ -17,6 +17,7 @@ class _DoctorsPageState extends State<DoctorsPage> {
   List<Doctor> _doctorList = [];
   List<Doctor> _duplicatedSearchItems = [];
 
+  //execution avant affichage de linterface
   @override
   void initState() {
     super.initState();

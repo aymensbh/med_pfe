@@ -51,6 +51,7 @@ class _AddAddDrugState extends State<AddDrug> {
                   if (input.trim().isEmpty) {
                     return 'Fournir un médicament';
                   }
+                  return null;
                 },
                 onSaved: (input) {
                   _name = input.trim();

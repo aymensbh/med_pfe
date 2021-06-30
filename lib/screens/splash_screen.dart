@@ -6,6 +6,7 @@ import 'doctor/doctors_page.dart';
 class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    //connection to database
     return FutureBuilder(
       future: DatabaseHelper.init(),
       builder: (context, snapshot) {
@@ -17,6 +18,7 @@ class SplashScreen extends StatelessWidget {
             ),
           );
         } else {
+          //connected to database
           return DoctorsPage();
         }
       },
